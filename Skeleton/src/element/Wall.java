@@ -16,9 +16,12 @@ public class Wall extends Element {
 	@Override
 	public void meet(Colonel c) {
 
-		if(Portals.isPortal(this, c.getPosition())) {
+		if (Portals.isPortal(this, c.getPosition())) {
+
 			Portals.send(c);
+
 		} else {
+
 			c.stepBack();
 		}
 	}

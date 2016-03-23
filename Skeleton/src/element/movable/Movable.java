@@ -15,7 +15,14 @@ public abstract class Movable extends Element {
 		this.direction = direction;
 	}
 
-	public abstract void step();
+	public void step() {
+
+		Field nextField = position.getNeighbour(direction);
+
+		nextField.enter(this);
+		position.exit(this);
+		position = nextField;
+	}
 
 	public Field getPosition() {
 
@@ -28,6 +35,7 @@ public abstract class Movable extends Element {
 	}
 
 	public void setPosition(Field position) {
+
 		this.position = position;
 	}
 }

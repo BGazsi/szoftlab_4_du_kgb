@@ -5,13 +5,10 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import element.Box;
 import element.Element;
-import element.movable.Bullet;
-import element.movable.Colonel;
 import enums.Direction;
 
-public abstract class Field {
+public class Field {
 
 	protected Map<Direction, Field> neighbours;
 	protected Set<Element> elements;
@@ -22,54 +19,19 @@ public abstract class Field {
 		this.elements = new HashSet<Element>();
 	}
 
-	public void enter(Colonel c) {
+	public void enter(Element e) {
 
-		// NOTHING TO DO
-	}
+		for (Element element : elements) {
 
-	public void enter(Bullet b) {
-
-		// NOTHING TO DO
-	}
-
-	public void enter(Box b) {
-
-		// NOTHING TO DO
-	}
-
-	public void exit(Colonel c) {
-
-		// NOTHING TO DO
-	}
-
-	public void exit(Bullet b) {
-
-		// NOTHING TO DO
-	}
-
-	public void exit(Box b) {
-
-		// NOTHING TO DO
-	}
-
-	public Box pickUpBox() {
-
-		// TODO
-		return null;
-	}
-
-	public void putDownBox(Box b) {
-
-		// TODO
-	}
-
-	public void addElement(Element e) {
+			e.collide(element);
+		}
 
 		elements.add(e);
 	}
 
-	public void removeElement(Element e) {
+	public void exit(Element e) {
 
+		// TODO
 		elements.remove(e);
 	}
 

@@ -1,46 +1,64 @@
 package element.movable;
 
-import java.util.HashSet;
-import java.util.Set;
-
+import element.Box;
 import element.Element;
+import element.ZPM;
 import enums.Direction;
+import enums.PortalColour;
 import field.Field;
 
 public class Colonel extends Movable {
 
-	private Set<Element> elements;
+	private Element element;
+	private int ZMPcount;
 
 	public Colonel(Field position, Direction direction) {
 
 		super(position, direction);
-		this.elements = new HashSet<Element>();
 	}
 
 	@Override
-	public void step() {
+	public void collide(Element e) {
 
-		Field nextField = position.getNeighbour(direction);
-		nextField.enter(this);
+		e.meet(this);
 	}
 
-	public void moveBox() {
+	public Bullet shoot(PortalColour color) {
 
-		// TODO
-		Field field = position.getNeighbour(direction);
+		return new Bullet(position, direction, color);
+	}
 
-		if (elements.size() == 0) {
+	public void stepBack() {
 
-			field.pickUpBox();
+		direction = direction.getOpposite();
+		step();
+		direction = direction.getOpposite();
+	}
 
-		} else {
+	public void pickUp(Box b) {
 
-			field.putDownBox(null);
+		if (element == null) {
+
+			element = b;
+			position.exit(b);
 		}
 	}
 
-	public void kill() {
+	public void pickUp(ZPM z) {
+
+		ZMPcount++;
+		position.exit(z);
+	}
+
+	public void putDown(Element e) {
+
+		position.enter(e);
+		element = null;
+	}
+
+	public void die() {
 
 		// TODO
 	}
+
 }

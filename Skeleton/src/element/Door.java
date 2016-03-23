@@ -12,6 +12,26 @@ public class Door extends Element {
 		this.isOpened = false;
 	}
 
+	@Override
+	public void meet(Colonel c) {
+
+		if (!isOpened)
+			c.stepBack();
+	}
+
+	@Override
+	public void meet(Bullet b) {
+
+		if (!isOpened)
+			b.destroy();
+	}
+
+	@Override
+	public void meet(Box b) {
+
+		// TODO
+	}
+
 	public void open() {
 
 		isOpened = true;
@@ -20,24 +40,5 @@ public class Door extends Element {
 	public void close() {
 
 		isOpened = false;
-	}
-	
-	@Override
-	public void meet(Colonel c) {
-		if(!isOpened) {
-			c.stepBack();
-		}
-	}
-	
-	@Override
-	public void meet(Bullet b) {
-		if(!isOpened) {
-			b.destroy();
-		}
-	}
-	
-	@Override
-	public void meet(Box b) {
-		// TODO
 	}
 }

@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import element.movable.Colonel;
-import field.Door;
 
 public class Scale extends Element {
 
@@ -32,18 +31,22 @@ public class Scale extends Element {
 	}
 
 	@Override
-	public void divide(Colonel c) {
+	public void leave(Colonel c) {
 
 		elements.remove(c);
-		if (elements.size() == 0)
+
+		if (elements.isEmpty()) {
 			door.close();
+		}
 	}
 
 	@Override
-	public void divide(Box b) {
+	public void leave(Box b) {
 
 		elements.remove(b);
-		if (elements.size() == 0)
+
+		if (elements.isEmpty()) {
 			door.close();
+		}
 	}
 }

@@ -5,6 +5,11 @@ import element.movable.Colonel;
 
 public abstract class Element {
 
+	public void collide(Element e) {
+
+		// NOTHING TO DO
+	}
+
 	public void meet(Colonel c) {
 
 		// NOTHING TO DO
@@ -20,12 +25,17 @@ public abstract class Element {
 		// NOTHING TO DO
 	}
 
-	public void divide(Colonel c) {
+	public void sunder(Element e) {
 
 		// NOTHING TO DO
 	}
 
-	public void divide(Box b) {
+	public void leave(Colonel c) {
+
+		// NOTHING TO DO
+	}
+
+	public void leave(Box b) {
 
 		// NOTHING TO DO
 	}

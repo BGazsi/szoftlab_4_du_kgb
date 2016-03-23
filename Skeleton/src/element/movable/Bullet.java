@@ -1,5 +1,6 @@
 package element.movable;
 
+import element.Element;
 import enums.Direction;
 import enums.PortalColour;
 import field.Field;
@@ -15,14 +16,19 @@ public class Bullet extends Movable {
 	}
 
 	@Override
-	public void step() {
+	public void collide(Element e) {
 
-		Field nextField = position.getNeighbour(direction);
-		nextField.enter(this);
+		e.meet(this);
+	}
+
+	public void destroy() {
+
+		// TODO
 	}
 
 	public PortalColour getPortalColour() {
 
 		return portalColour;
 	}
+
 }
