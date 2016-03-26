@@ -2,14 +2,16 @@ package game;
 
 import java.util.List;
 
+import calltree.CallTreeElement;
 import element.Wall;
 import element.movable.Bullet;
 import element.movable.Colonel;
 import enums.Direction;
-import enums.PortalColour;
 import field.Field;
 
 public class Game {
+
+	public static CallTreeElement callTree = new CallTreeElement();
 
 	private static Colonel oneill;
 	private static List<Bullet> bullets;
@@ -26,9 +28,11 @@ public class Game {
 		f2.enter(new Wall(true));
 
 		oneill = new Colonel(f1, Direction.EAST);
-		Bullet b = new Bullet(f1, Direction.EAST, PortalColour.BLUE);
+		// Bullet b = new Bullet(f1, Direction.EAST, PortalColour.BLUE);
 
-		b.step();
+		// b.step();
 		oneill.step();
+
+		callTree.printCallTree(" ", 0);
 	}
 }

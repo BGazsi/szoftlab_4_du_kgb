@@ -31,7 +31,11 @@ public class Field {
 
 	public void exit(Element e) {
 
-		// TODO
+		for (Element element : elements) {
+
+			e.sunder(element);
+		}
+
 		elements.remove(e);
 	}
 

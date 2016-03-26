@@ -16,6 +16,16 @@ public class Bullet extends Movable {
 	}
 
 	@Override
+	public void step() {
+
+		Field nextField = position.getNeighbour(direction);
+
+		nextField.enter(this);
+		position.exit(this);
+		position = nextField;
+	}
+
+	@Override
 	public void collide(Element e) {
 
 		e.meet(this);
@@ -30,5 +40,4 @@ public class Bullet extends Movable {
 
 		return portalColour;
 	}
-
 }

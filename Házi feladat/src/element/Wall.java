@@ -2,7 +2,7 @@ package element;
 
 import element.movable.Bullet;
 import element.movable.Colonel;
-import singleton.Portals;
+import portal.Portals;
 
 public class Wall extends Element {
 
@@ -35,18 +35,4 @@ public class Wall extends Element {
 
 		b.destroy();
 	}
-
-	// public void enter(Bullet b) {
-	//
-	// b.getPosition().exit(b);
-	// b.setPosition(this);
-	//
-	// if (isShootable) {
-	//
-	// Field bulletField = b.getPosition();
-	// Field wallField = bulletField.getNeighbour(b.getDirection());
-	//
-	// Portals.createPortal(b.getPortalColour(), wallField, bulletField);
-	// }
-	// }
 }
