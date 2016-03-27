@@ -1,9 +1,13 @@
 package element.movable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import element.Element;
 import enums.Direction;
 import enums.PortalColour;
 import field.Field;
+import game.Game;
 
 public class Bullet extends Movable {
 
@@ -13,6 +17,10 @@ public class Bullet extends Movable {
 
 		super(position, direction);
 		this.portalColour = portalColour;
+
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 2);
 	}
 
 	@Override
@@ -33,10 +41,18 @@ public class Bullet extends Movable {
 
 	public void destroy() {
 
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
+
 		// TODO
 	}
 
 	public PortalColour getPortalColour() {
+
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
 		return portalColour;
 	}

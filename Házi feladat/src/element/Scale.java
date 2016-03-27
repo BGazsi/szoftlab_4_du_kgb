@@ -1,9 +1,12 @@
 package element;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import element.movable.Colonel;
+import game.Game;
 
 public class Scale extends Element {
 
@@ -11,6 +14,10 @@ public class Scale extends Element {
 	private Set<Element> elements;
 
 	public Scale(Door door) {
+
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 
 		this.door = door;
 		this.elements = new HashSet<Element>();

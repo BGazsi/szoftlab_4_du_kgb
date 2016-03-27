@@ -6,6 +6,7 @@ import java.util.regex.Pattern;
 
 public class CallTreeElement {
 
+	private int priority;
 	private StackTraceElement call;
 	private String callPos;
 	private List<CallTreeElement> childCalls;
@@ -13,12 +14,13 @@ public class CallTreeElement {
 	public CallTreeElement() {
 	}
 
-	public CallTreeElement(StackTraceElement call, String callPos) {
+	private CallTreeElement(int priority, StackTraceElement call, String callPos) {
+		this.priority = priority;
 		this.call = call;
 		this.callPos = callPos;
 	}
 
-	public void addChildCalls(List<StackTraceElement> callList, String callPos) {
+	public void addChildCalls(List<StackTraceElement> callList, String callPos, int priority) {
 
 		if (!callList.isEmpty()) {
 
@@ -28,7 +30,7 @@ public class CallTreeElement {
 				childCalls = new ArrayList<CallTreeElement>();
 			}
 
-			CallTreeElement newElement = new CallTreeElement(element, callPos);
+			CallTreeElement newElement = new CallTreeElement(priority, element, callPos);
 
 			CallTreeElement previousCall = null;
 			for (CallTreeElement e : childCalls) {
@@ -42,24 +44,27 @@ public class CallTreeElement {
 			if (previousCall == null) {
 
 				childCalls.add(newElement);
-				newElement.addChildCalls(callList, p);
+				newElement.addChildCalls(callList, p, priority);
 
 			} else {
 
-				previousCall.addChildCalls(callList, p);
+				previousCall.priority = newElement.priority;
+				previousCall.addChildCalls(callList, p, priority);
 			}
 		}
 	}
 
-	public void printCallTree(String s, int charCount) {
+	public void printCallTree(int priority, String s, int charCount, String arrow) {
 
-		if (call != null && call.getFileName() != null) {
+		if (call != null && call.getFileName() != null && this.priority <= priority) {
 			for (int i = 1; i <= charCount; i++) {
 				System.out.print(s);
 			}
-			System.out.print(
-					call.getClassName().split(Pattern.quote("."))[call.getClassName().split(Pattern.quote(".")).length
-							- 1] + "." + call.getMethodName() + "()");
+			System.out
+					.print(arrow
+							+ call.getClassName()
+									.split(Pattern.quote("."))[call.getClassName().split(Pattern.quote(".")).length - 1]
+							+ "." + call.getMethodName() + "()");
 			if (callPos != null) {
 				System.out.print(" - " + callPos);
 			}
@@ -69,8 +74,17 @@ public class CallTreeElement {
 
 		if (childCalls != null) {
 			for (CallTreeElement e : childCalls) {
-				e.printCallTree(s, charCount);
+				e.printCallTree(priority, s, charCount, arrow);
 			}
+		}
+	}
+
+	public List<CallTreeElement> getChildCalls() {
+
+		if (call == null) {
+			return childCalls.get(0).childCalls;
+		} else {
+			return childCalls;
 		}
 	}
 
@@ -78,7 +92,8 @@ public class CallTreeElement {
 	public boolean equals(Object obj) {
 
 		CallTreeElement cte = (CallTreeElement) obj;
-		return (callPos == null && cte.callPos == null) || callPos.equals(cte.callPos);
+		return (callPos == null && cte.callPos == null)
+				|| (callPos.equals(cte.callPos) && call.getMethodName().equals(cte.call.getMethodName()));
 	}
 
 	@Override

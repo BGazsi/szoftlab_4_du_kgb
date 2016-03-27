@@ -1,7 +1,11 @@
 package element;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import element.movable.Bullet;
 import element.movable.Colonel;
+import game.Game;
 import portal.Portals;
 
 public class Wall extends Element {
@@ -11,6 +15,10 @@ public class Wall extends Element {
 	public Wall(boolean isShootable) {
 
 		this.isShootable = isShootable;
+
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
 	@Override
@@ -22,7 +30,7 @@ public class Wall extends Element {
 
 		} else {
 
-			c.stepBack();
+			c.stay();
 		}
 	}
 

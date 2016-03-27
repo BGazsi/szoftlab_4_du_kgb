@@ -1,8 +1,19 @@
 package element;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+
 import element.movable.Colonel;
+import game.Game;
 
 public class Box extends Element {
+
+	public Box() {
+
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
+	}
 
 	@Override
 	public void collide(Element e) {
@@ -17,6 +28,10 @@ public class Box extends Element {
 	}
 
 	public void destroy() {
+
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
 		// TODO
 	}

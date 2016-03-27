@@ -15,12 +15,16 @@ public class Colonel extends Movable {
 
 	private Element element;
 	private int ZMPcount;
-	private boolean needToStepBack;
+	private boolean needToStay;
 
 	public Colonel(Field position, Direction direction) {
 
 		super(position, direction);
-		this.needToStepBack = false;
+		this.needToStay = false;
+
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
 	@Override
@@ -29,8 +33,9 @@ public class Colonel extends Movable {
 		Field nextField = position.getNeighbour(direction);
 
 		nextField.enter(this);
-		if (needToStepBack) {
+		if (needToStay) {
 
+			needToStay = false;
 			nextField.exit(this);
 
 		} else {
@@ -54,16 +59,20 @@ public class Colonel extends Movable {
 
 	public Bullet shoot(PortalColour color) {
 
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
+
 		return new Bullet(position, direction, color);
 	}
 
-	public void stepBack() {
+	public void stay() {
 
-		// TODO remove
+		// TODO CallTree
 		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null);
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
-		needToStepBack = true;
+		needToStay = true;
 	}
 
 	public void pickUp(Box b) {
@@ -89,7 +98,19 @@ public class Colonel extends Movable {
 
 	public void die() {
 
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
+
 		// TODO
 	}
 
+	public Element getElement() {
+
+		// TODO CallTree
+		Game.callTree.addChildCalls(
+				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
+
+		return element;
+	}
 }
