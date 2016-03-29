@@ -11,10 +11,14 @@ import enums.PortalColour;
 import field.Field;
 import game.Game;
 
+// Az Ezredest reprezentáló osztály
 public class Colonel extends Movable {
 
-	private Element element;
+	// az Ezredesnél lévő tárgy referenciája (ha nincs nála semmi akkor null)
+	private Box box;
+	// Ezrdes által felvett ZPMek száma
 	private int ZMPcount;
+	// az Ezredes helyben maradásának szükségességét jelző flag
 	private boolean needToStay;
 
 	public Colonel(Field position, Direction direction) {
@@ -27,24 +31,31 @@ public class Colonel extends Movable {
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
+	// Az Ezredes mozgását leíró függvény
 	@Override
 	public void step() {
 
+		// elkéri a szomszédos mezőt
 		Field nextField = position.getNeighbour(direction);
 
+		// új mezőre rálép
 		nextField.enter(this);
+		// ha helyben kell maradnia (mert mondjuk fal van ott ahova lépni akart
 		if (needToStay) {
 
 			needToStay = false;
+			// az új mezőről "visszalép"
 			nextField.exit(this);
 
 		} else {
 
+			// a jelenlegi mezőről lelép
 			position.exit(this);
 			position = nextField;
 		}
 	}
 
+	// Egy elementtel való ütközés esetén meghívódó függvény
 	@Override
 	public void collide(Element e) {
 
@@ -57,6 +68,7 @@ public class Colonel extends Movable {
 		e.leave(this);
 	}
 
+	// Az Ezredes lövését (lövedék letrehozását) kezelő függvény
 	public Bullet shoot(PortalColour color) {
 
 		// TODO CallTree
@@ -66,6 +78,7 @@ public class Colonel extends Movable {
 		return new Bullet(position, direction, color);
 	}
 
+	// A függvény ami helyben maradásra utasítja az Ezredest
 	public void stay() {
 
 		// TODO CallTree
@@ -75,27 +88,32 @@ public class Colonel extends Movable {
 		needToStay = true;
 	}
 
+	// Egy doboz felvételét reprezentáló függvény
 	public void pickUp(Box b) {
 
-		if (element == null) {
+		// csak akkor veszünk fel új elemet ha nincs nála épp másik
+		if (box == null) {
 
-			element = b;
+			box = b;
 			position.exit(b);
 		}
 	}
 
+	// Egy ZPM felvételét reprezentáló függvény
 	public void pickUp(ZPM z) {
 
 		ZMPcount++;
 		position.exit(z);
 	}
 
-	public void putDown(Element e) {
+	// Doboz letétele
+	public void putDown(Box e) {
 
 		position.enter(e);
-		element = null;
+		box = null;
 	}
 
+	// Az Ezredes halálát szimbolizáló függvény
 	public void die() {
 
 		// TODO CallTree
@@ -105,12 +123,13 @@ public class Colonel extends Movable {
 		// TODO
 	}
 
-	public Element getElement() {
+	// Visszatér az Ezredesnél lévő doboz referencájával
+	public Box getElement() {
 
 		// TODO CallTree
 		Game.callTree.addChildCalls(
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
-		return element;
+		return box;
 	}
 }

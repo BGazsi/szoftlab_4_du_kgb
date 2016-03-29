@@ -4,11 +4,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+// Skeleton függyvénhívást listázó osztály
 public class CallTreeElement {
 
+	// prioritás ami alapján lehet listázni
 	private int priority;
+	// az aktuális szinten lévő hívás
 	private StackTraceElement call;
+	/* a hívás helye */
 	private String callPos;
+	/* a csúcs alatti hívások */
 	private List<CallTreeElement> childCalls;
 
 	public CallTreeElement() {
@@ -20,6 +25,7 @@ public class CallTreeElement {
 		this.callPos = callPos;
 	}
 
+	// Egy adott csúcshoz vesz fel alsőbb hivásokat
 	public void addChildCalls(List<StackTraceElement> callList, String callPos, int priority) {
 
 		if (!callList.isEmpty()) {
@@ -54,6 +60,7 @@ public class CallTreeElement {
 		}
 	}
 
+	// Egy elkészült fa kiiratásáért felelős függvény
 	public void printCallTree(int priority, String s, int charCount, String arrow) {
 
 		if (call != null && call.getFileName() != null && this.priority <= priority) {
@@ -79,6 +86,7 @@ public class CallTreeElement {
 		}
 	}
 
+	// Egy adott csúcs alatti csúcspontokat adja vissza
 	public List<CallTreeElement> getChildCalls() {
 
 		if (call == null) {
@@ -88,6 +96,7 @@ public class CallTreeElement {
 		}
 	}
 
+	// Object.equals() felüldefiniálása
 	@Override
 	public boolean equals(Object obj) {
 
@@ -96,11 +105,14 @@ public class CallTreeElement {
 				|| (callPos.equals(cte.callPos) && call.getMethodName().equals(cte.call.getMethodName()));
 	}
 
+	// Object.hashCode() felüldefiniálása
 	@Override
 	public int hashCode() {
 		return callPos.length();
 	}
 
+	// List<StackTraceElement> objektumnak az utolsó elemét távolítja el és tér
+	// vissza vele
 	private StackTraceElement popElement(List<StackTraceElement> list) {
 		return list.remove(list.size() - 1);
 	}

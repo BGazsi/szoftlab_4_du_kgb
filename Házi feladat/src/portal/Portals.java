@@ -11,8 +11,10 @@ import enums.PortalColour;
 import field.Field;
 import game.Game;
 
+// Portálokat szimbolizáló osztály
 public class Portals {
 
+	// az épp aktív portálok
 	private static Map<PortalColour, Portal> portals = new HashMap<PortalColour, Portal>();
 
 	private static class Portal {
@@ -31,6 +33,7 @@ public class Portals {
 		}
 	}
 
+	// Új portál létrehozása
 	public static void createPortal(PortalColour colour, Wall position, Field outputField) {
 
 		// TODO CallTree
@@ -42,6 +45,7 @@ public class Portals {
 		portals.put(colour, portal);
 	}
 
+	// Egy adott falra vonatkozó ellenőrzés, hogy van-e rajta portál
 	public static boolean isPortal(Wall position, Field outputField) {
 
 		// TODO CallTree
@@ -57,6 +61,7 @@ public class Portals {
 		return false;
 	}
 
+	// Az Ezredest továbbító függvény
 	public static void send(Colonel c) {
 
 		// TODO

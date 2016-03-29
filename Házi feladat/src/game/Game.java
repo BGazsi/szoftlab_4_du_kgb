@@ -18,15 +18,24 @@ import enums.PortalColour;
 import field.Field;
 import portal.Portals;
 
+// A jÃ¡tÃ©k szÃ­nterÃ©t leÃ­rÃ³ osztÃ¡ly
 public class Game {
 
+	// fÃ¼ggvÃ©nyhÃ­vÃ¡st listÃ¡zÃ³ objektum
 	public static CallTreeElement callTree = new CallTreeElement();
 
-	private static final String[] menuOptions = { "Inicializálás", "Ezredes üres mezõre lép", "Ezredes szakadékba lép",
-			"Ezredes zárt ajtóra lépne", "Ezredes nyitott ajtóra lép", "Ezredes falra lépne", "Ezredes mérlegre lép",
-			"Ezredes leszáll a mérlegrõl", "Ezredes lõ", "Lövedék repül", "Lövedék sima falba csapódik",
-			"Lövedék speciális falba csapódik", "Ezredes felveszi a dobozt", "Ezredes lerakja a dobozt",
-			"Féregjárat nyílik", "Ezredes átlép a féregjáraton", "Ezredes felveszi a ZPM-et" };
+	// menÃ¼pontok
+	private static final String[] menuOptions = { "InicializÃ¡lÃ¡s", "Ezredes Ã¼res mezÅ‘re lÃ©p", "Ezredes szakadÃ©kba lÃ©p",
+			"Ezredes zÃ¡rt ajtÃ³ra lÃ©pne", "Ezredes nyitott ajtÃ³ra lÃ©p", "Ezredes falra lÃ©pne", "Ezredes mÃ©rlegre lÃ©p",
+			"Ezredes leszÃ¡ll a mÃ©rlegrÅ‘l", "Ezredes lÅ‘", "LÃ¶vedÃ©k repÃ¼l", "LÃ¶vedÃ©k sima falba csapÃ³dik",
+			"LÃ¶vedÃ©k speciÃ¡lis falba csapÃ³dik", "Ezredes felveszi a dobozt", "Ezredes lerakja a dobozt",
+			"FÃ©regjÃ¡rat nyÃ­lik", "Ezredes Ã¡tlÃ©p a fÃ©regjÃ¡raton", "Ezredes felveszi a ZPM-et" };
+
+	/*
+	 * Az alÃ¡bbiakban az egyes menÃ¼pontokat kiszolgÃ¡lÃ³ fÃ¼ggvÃ©nyek/tesztesetek
+	 * lÃ¡thatÃ³ak, illetve az egÃ©sz kÃ¶rnyezet lelkÃ©t jelentÅ‘ main fÃ¼ggvÃ©ny, a
+	 * program belÃ©pÃ©si pontja.
+	 */
 
 	public static void init() {
 
@@ -313,7 +322,7 @@ public class Game {
 				System.out.println(i + ".\t" + menuOptions[i]);
 			}
 
-			System.out.print("\nKérem a sorszámot: ");
+			System.out.print("\nKÃ©rem a sorszÃ¡mot: ");
 			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 
 			try {

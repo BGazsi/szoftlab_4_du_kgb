@@ -7,8 +7,10 @@ import element.movable.Bullet;
 import element.movable.Colonel;
 import game.Game;
 
+// Ajtót reprezentáló függvény
 public class Door extends Element {
 
+	// ajtó álapotát tároló változó
 	private boolean isOpened;
 
 	public Door() {
@@ -29,6 +31,7 @@ public class Door extends Element {
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
+	// Ezredessel való egy mezőre kerülés
 	@Override
 	public void meet(Colonel c) {
 
@@ -36,6 +39,7 @@ public class Door extends Element {
 			c.stay();
 	}
 
+	// Lövedékkel való egy mezőre kerülés
 	@Override
 	public void meet(Bullet b) {
 
@@ -43,6 +47,7 @@ public class Door extends Element {
 			b.destroy();
 	}
 
+	// Dobozzal való egy mezőre kerülés
 	@Override
 	public void meet(Box b) {
 
@@ -53,6 +58,7 @@ public class Door extends Element {
 		// TODO
 	}
 
+	// Ajtó kinyitása
 	public void open() {
 
 		// TODO CallTree
@@ -62,6 +68,7 @@ public class Door extends Element {
 		isOpened = true;
 	}
 
+	// Ajtó becsukása
 	public void close() {
 
 		// TODO CallTree

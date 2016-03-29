@@ -11,9 +11,12 @@ import element.Element;
 import enums.Direction;
 import game.Game;
 
+// Mezőt reprezentáló osztály
 public class Field {
 
+	// mező szomszédai
 	protected Map<Direction, Field> neighbours;
+	// mezőn lévő elementek
 	protected Set<Element> elements;
 
 	public Field() {
@@ -26,6 +29,7 @@ public class Field {
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
+	// Mezőre történő lépés
 	public void enter(Element e) {
 
 		// TODO CallTree
@@ -40,6 +44,7 @@ public class Field {
 		elements.add(e);
 	}
 
+	// Mező elhagyása
 	public void exit(Element e) {
 
 		// TODO CallTree
@@ -54,6 +59,7 @@ public class Field {
 		elements.remove(e);
 	}
 
+	// Adott irányban lévő szomszédok elkérése
 	public Field getNeighbour(Direction d) {
 
 		// TODO CallTree
@@ -63,6 +69,7 @@ public class Field {
 		return neighbours.get(d);
 	}
 
+	// Adott irányba lévő szomszédok beállítása
 	public void setNeighbour(Direction d, Field f) {
 
 		// TODO CallTree
@@ -72,6 +79,7 @@ public class Field {
 		neighbours.put(d, f);
 	}
 
+	// Egy elem mezőhöz adása (ha nem akarjuk hogy minden elemmel "találkozzon")
 	public void addElement(Element e) {
 
 		// TODO CallTree

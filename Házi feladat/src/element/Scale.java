@@ -8,9 +8,12 @@ import java.util.Set;
 import element.movable.Colonel;
 import game.Game;
 
+// Mérleget szimbolizáló osztály
 public class Scale extends Element {
 
+	// mérleghez tartozó ajtó referenciája
 	private Door door;
+	// mérlegen lévő elementek
 	private Set<Element> elements;
 
 	public Scale(Door door) {
@@ -23,6 +26,7 @@ public class Scale extends Element {
 		this.elements = new HashSet<Element>();
 	}
 
+	// Ezredessel való egy mezőre kerülés
 	@Override
 	public void meet(Colonel c) {
 
@@ -30,6 +34,7 @@ public class Scale extends Element {
 		door.open();
 	}
 
+	// Dobozzal való egy mezőre kerülés
 	@Override
 	public void meet(Box b) {
 
@@ -37,6 +42,7 @@ public class Scale extends Element {
 		door.open();
 	}
 
+	// Ezredessel való "búcsúzkodás"
 	@Override
 	public void leave(Colonel c) {
 
@@ -47,6 +53,7 @@ public class Scale extends Element {
 		}
 	}
 
+	// Doboztól való elbúcsúzás
 	@Override
 	public void leave(Box b) {
 
