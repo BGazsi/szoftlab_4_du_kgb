@@ -1,15 +1,24 @@
 package element;
 
-import element.movable.Colonel;
+import element.movable.Replicator;
+import element.movable.player.Player;
 
 // Szakadékot szombolizáló osztály
 public class Gap extends Element {
 
-	// Ezredessel való egy mezőre kerülés
+	// Playerrel való egy mezőre kerülés
 	@Override
-	public void meet(Colonel c) {
+	public void meet(Player p) {
 
-		c.die();
+		p.die();
+	}
+
+	// Replikátorral való egy mezőre kerülés
+	@Override
+	public void meet(Replicator r) {
+
+		r.die();
+		game.removeElement(this);
 	}
 
 	// Dobozzal való egy mezőre kerülés

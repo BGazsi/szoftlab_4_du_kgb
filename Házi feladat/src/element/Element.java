@@ -4,11 +4,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import element.movable.Bullet;
-import element.movable.Colonel;
+import element.movable.Replicator;
+import element.movable.player.Player;
 import game.Game;
 
 // Játékban előforduló objektumok ősosztálya
 public abstract class Element {
+
+	// elementet tartalmazó Game objektum refrenciája
+	protected Game game;
+
+	public void setGame(Game game) {
+		this.game = game;
+	}
 
 	// Egy elemmel való utközés
 	public void collide(Element e) {
@@ -20,12 +28,18 @@ public abstract class Element {
 		// NOTHING TO DO
 	}
 
-	// Ezredessel való egy mezőre kerülés
-	public void meet(Colonel c) {
+	// Playerrel való egy mezőre kerülés
+	public void meet(Player p) {
 
 		// TODO CallTree
 		Game.callTree.addChildCalls(
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
+
+		// NOTHING TO DO
+	}
+
+	// Replikátorral való egy mezőre kerülés
+	public void meet(Replicator r) {
 
 		// NOTHING TO DO
 	}
@@ -60,8 +74,8 @@ public abstract class Element {
 		// NOTHING TO DO
 	}
 
-	// Ezredestől való "búcsúzás"
-	public void leave(Colonel c) {
+	// Playerrel való "búcsúzás"
+	public void leave(Player p) {
 
 		// TODO CallTree
 		Game.callTree.addChildCalls(
@@ -78,5 +92,9 @@ public abstract class Element {
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
 		// NOTHING TO DO
+	}
+
+	public int getWeight() {
+		return 0;
 	}
 }

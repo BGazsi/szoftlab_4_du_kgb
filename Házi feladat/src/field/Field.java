@@ -6,8 +6,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.Stack;
 
+import element.Box;
 import element.Element;
+import element.movable.Movable;
 import enums.Direction;
 import game.Game;
 
@@ -15,9 +18,11 @@ import game.Game;
 public class Field {
 
 	// mező szomszédai
-	protected Map<Direction, Field> neighbours;
+	private Map<Direction, Field> neighbours;
 	// mezőn lévő elementek
-	protected Set<Element> elements;
+	private Set<Element> elements;
+	// mezőn lévő boxok
+	private Stack<Box> boxes;
 
 	public Field() {
 
@@ -30,7 +35,7 @@ public class Field {
 	}
 
 	// Mezőre történő lépés
-	public void enter(Element e) {
+	public void enter(Movable m) {
 
 		// TODO CallTree
 		Game.callTree.addChildCalls(
@@ -38,14 +43,14 @@ public class Field {
 
 		for (Element element : elements) {
 
-			e.collide(element);
+			m.collide(element);
 		}
 
-		elements.add(e);
+		elements.add(m);
 	}
 
 	// Mező elhagyása
-	public void exit(Element e) {
+	public void exit(Movable m) {
 
 		// TODO CallTree
 		Game.callTree.addChildCalls(
@@ -53,10 +58,27 @@ public class Field {
 
 		for (Element element : elements) {
 
-			e.sunder(element);
+			m.sunder(element);
 		}
 
-		elements.remove(e);
+		elements.remove(m);
+	}
+
+	public void pushBox(Box b) {
+
+		boxes.push(b);
+		for (Element e : elements) {
+			e.meet(b);
+		}
+	}
+
+	public Box popBox() {
+
+		Box b = boxes.pop();
+		for (Element e : elements) {
+			e.leave(b);
+		}
+		return b;
 	}
 
 	// Adott irányban lévő szomszédok elkérése
@@ -77,15 +99,5 @@ public class Field {
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 
 		neighbours.put(d, f);
-	}
-
-	// Egy elem mezőhöz adása (ha nem akarjuk hogy minden elemmel "találkozzon")
-	public void addElement(Element e) {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
-
-		elements.add(e);
 	}
 }

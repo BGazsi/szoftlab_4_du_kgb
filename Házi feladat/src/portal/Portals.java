@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import element.Wall;
-import element.movable.Colonel;
+import element.movable.player.Player;
 import enums.PortalColour;
 import field.Field;
 import game.Game;
@@ -61,10 +61,10 @@ public class Portals {
 		return false;
 	}
 
-	// Az Ezredest továbbító függvény
-	public static void send(Colonel c) {
+	// Az Playert továbbító függvény
+	public static void send(Player c) {
 
-		// TODO
+		// TODO send
 		c.stay();
 	}
 }

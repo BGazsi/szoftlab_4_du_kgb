@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import element.movable.Bullet;
-import element.movable.Colonel;
+import element.movable.player.Player;
 import game.Game;
 
 // Ajtót reprezentáló függvény
@@ -31,12 +31,12 @@ public class Door extends Element {
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
-	// Ezredessel való egy mezőre kerülés
+	// Playerrel való egy mezőre kerülés
 	@Override
-	public void meet(Colonel c) {
+	public void meet(Player p) {
 
 		if (!isOpened)
-			c.stay();
+			p.stay();
 	}
 
 	// Lövedékkel való egy mezőre kerülés
@@ -55,7 +55,7 @@ public class Door extends Element {
 		Game.callTree.addChildCalls(
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
-		// TODO
+		// TODO meet
 	}
 
 	// Ajtó kinyitása

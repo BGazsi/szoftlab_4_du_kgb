@@ -29,6 +29,8 @@ public class Bullet extends Movable {
 	@Override
 	public void step() {
 
+		// FIXME auto
+
 		// elkéri az adott irányba lévő mezőt
 		Field nextField = position.getNeighbour(direction);
 
@@ -53,7 +55,7 @@ public class Bullet extends Movable {
 		Game.callTree.addChildCalls(
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
-		// TODO
+		game.removeElement(this);
 	}
 
 	// Visszatér a lövedék által létrjövő portál színével
@@ -65,4 +67,5 @@ public class Bullet extends Movable {
 
 		return portalColour;
 	}
+
 }

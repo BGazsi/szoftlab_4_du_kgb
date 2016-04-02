@@ -1,14 +1,14 @@
 package element;
 
-import element.movable.Colonel;
+import element.movable.player.Player;
 
 // ZPMet reprezentáló osztály
 public class ZPM extends Element {
 
-	// Ezredessel való egy mezőre kerülés
+	// Playerrel való egy mezőre kerülés
 	@Override
-	public void meet(Colonel c) {
+	public void meet(Player p) {
 
-		c.pickUp(this);
+		p.pickUp(this);
 	}
 }

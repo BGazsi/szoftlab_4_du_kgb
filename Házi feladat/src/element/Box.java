@@ -3,13 +3,17 @@ package element;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import element.movable.Colonel;
 import game.Game;
 
 // A dobozt szimbolizáló függvény
 public class Box extends Element {
 
-	public Box() {
+	// a doboz súlya
+	protected int weight;
+
+	public Box(int weight) {
+
+		this.weight = weight;
 
 		// TODO CallTree
 		Game.callTree.addChildCalls(
@@ -23,13 +27,6 @@ public class Box extends Element {
 		e.meet(this);
 	}
 
-	// Ezredessel való egy mezőre kerülés
-	@Override
-	public void meet(Colonel c) {
-
-		c.pickUp(this);
-	}
-
 	// Doboz megsemmisülése
 	public void destroy() {
 
@@ -37,6 +34,12 @@ public class Box extends Element {
 		Game.callTree.addChildCalls(
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
-		// TODO
+		game.removeElement(this);
+	}
+
+	@Override
+	public int getWeight() {
+
+		return weight;
 	}
 }

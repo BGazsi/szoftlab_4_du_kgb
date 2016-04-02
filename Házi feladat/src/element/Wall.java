@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import element.movable.Bullet;
-import element.movable.Colonel;
+import element.movable.player.Player;
 import game.Game;
 import portal.Portals;
 
@@ -23,17 +23,17 @@ public class Wall extends Element {
 				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
-	// Ezredessel való egy mezőre kerülés
+	// Playerrel való egy mezőre kerülés
 	@Override
-	public void meet(Colonel c) {
+	public void meet(Player p) {
 
-		if (Portals.isPortal(this, c.getPosition())) {
+		if (Portals.isPortal(this, p.getPosition())) {
 
-			Portals.send(c);
+			Portals.send(p);
 
 		} else {
 
-			c.stay();
+			p.stay();
 		}
 	}
 
