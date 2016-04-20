@@ -1,410 +1,252 @@
 package game;
 
 import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.util.HashMap;
+import java.util.Map;
 
-import calltree.CallTreeElement;
+import element.Door;
 import element.Element;
+import element.Scale;
+import enums.Direction;
 import field.Field;
 
 // A játék színterét leíró osztály
 public class Game {
 
-	// függvényhívást listázó objektum
-	public static CallTreeElement callTree = new CallTreeElement();
+	private static Field fieldReference;
+	private static Map<String, Field> elements = new HashMap<String, Field>();
 
-	// menüpontok
-	private static final String[] menuOptions = { "Inicializálás", "Ezredes üres mezőre lép", "Ezredes szakadékba lép",
-			"Ezredes zárt ajtóra lépne", "Ezredes nyitott ajtóra lép", "Ezredes falra lépne", "Ezredes mérlegre lép",
-			"Ezredes leszáll a mérlegről", "Ezredes lő", "Lövedék repül", "Lövedék sima falba csapódik",
-			"Lövedék speciális falba csapódik", "Ezredes felveszi a dobozt", "Ezredes lerakja a dobozt",
-			"Féregjárat nyílik", "Ezredes átlép a féregjáraton", "Ezredes felveszi a ZPM-et" };
+	public static void addElement(Element e, Field f) {
 
-	public void addElement(Element e, Field f) {
-		// TODO addElement
-		e.setGame(this);
+		if (elements.containsKey(e.getName())) {
+
+			String name = Element.getNewName();
+			e.setName(name);
+		}
+
+		elements.put(e.getName(), f);
+		f.enter(e);
 	}
 
-	public void removeElement(Element e) {
-		// TODO removeElement
+	public static void removeElement(Element e) {
+
+		elements.remove(e.getName()).exit(e);
+
 	}
 
-	/*
-	 * Az alábbiakban az egyes menüpontokat kiszolgáló függvények/tesztesetek
-	 * láthatóak, illetve az egész környezet lelkét jelentő main függvény, a
-	 * program belépési pontja.
-	 */
+	private static void drawMaze() {
 
-	// MÁR NEM AKTUÁLIS!
+		int fieldWidth = 0;
+		for (Field f = fieldReference; f != null; f = f.getNeighbour(Direction.EAST)) {
+			fieldWidth++;
+		}
 
-	// public static void init() {
-	//
-	// final int rows = 3, cols = 3;
-	// Field fields[][] = new Field[rows][cols];
-	//
-	// for (int y = 0; y < rows; y++) {
-	// for (int x = 0; x < cols; x++) {
-	//
-	// Field f = new Field();
-	// fields[y][x] = f;
-	//
-	// if (x != 0)
-	// f.setNeighbour(Direction.WEST, fields[y][x - 1]);
-	// if (y != 0)
-	// f.setNeighbour(Direction.NORTH, fields[y - 1][x]);
-	// }
-	// }
-	//
-	// Door d = new Door();
-	//
-	// fields[0][0].addElement(new Scale(d));
-	// fields[0][2].addElement(new Box());
-	//
-	// fields[1][0].addElement(new Wall(false));
-	// fields[1][1].addElement(d);
-	// fields[1][2].addElement(new Wall(false));
-	//
-	// Colonel oneill = new Colonel(fields[0][1], Direction.SOUTH);
-	//
-	// fields[0][1].addElement(oneill);
-	// }
-	//
-	// public static void colonelToEmptyField() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.step();
-	// }
-	//
-	// public static void colonelToGap() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// f2.addElement(new Gap());
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.step();
-	// }
-	//
-	// public static void colonelToClosedDoor() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// f2.addElement(new Door());
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.step();
-	// }
-	//
-	// public static void colonelToOpenedDoor() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// f2.addElement(new Door(true));
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.step();
-	// }
-	//
-	// public static void colonelToWall() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// f2.addElement(new Wall(false));
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.step();
-	// }
-	//
-	// public static void ColonelToScale() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	// Field f3 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	// f2.setNeighbour(Direction.EAST, f3);
-	// f3.setNeighbour(Direction.WEST, f2);
-	//
-	// Door d = new Door();
-	//
-	// f2.addElement(new Scale(d));
-	// f3.addElement(d);
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.step();
-	// }
-	//
-	// public static void colonelFromScale() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	// Field f3 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	// f2.setNeighbour(Direction.EAST, f3);
-	// f3.setNeighbour(Direction.WEST, f2);
-	//
-	// Door d = new Door(true);
-	//
-	// f2.addElement(new Scale(d));
-	// f3.addElement(d);
-	//
-	// Colonel oneill = new Colonel(f2, Direction.WEST);
-	//
-	// oneill.step();
-	// }
-	//
-	// public static void colonelShoot() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.shoot(PortalColour.BLUE);
-	// }
-	//
-	// public static void bulletFly() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// Bullet b = new Bullet(f1, Direction.EAST, PortalColour.BLUE);
-	//
-	// b.step();
-	// }
-	//
-	// public static void bulletToSimpleWall() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// f2.addElement(new Wall(false));
-	//
-	// Bullet b = new Bullet(f1, Direction.EAST, PortalColour.BLUE);
-	//
-	// b.step();
-	// }
-	//
-	// public static void bulletToSpecialWall() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// f2.addElement(new Wall(true));
-	//
-	// Bullet b = new Bullet(f1, Direction.EAST, PortalColour.BLUE);
-	//
-	// b.step();
-	// }
-	//
-	// public static void colonelPickUpBox() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// f2.addElement(new Box());
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.step();
-	// }
-	//
-	// public static void colonelPutDownBox() {
-	//
-	// Field f1 = new Field();
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.putDown(oneill.getElement());
-	// }
-	//
-	// public static void createPortal() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// Wall w = new Wall(true);
-	//
-	// f2.addElement(w);
-	//
-	// Portals.createPortal(PortalColour.BLUE, w, f1);
-	// }
-	//
-	// public static void colonelToPortal() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// Wall w = new Wall(true);
-	//
-	// f2.addElement(w);
-	//
-	// Portals.createPortal(PortalColour.BLUE, w, f1);
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.step();
-	// }
-	//
-	// public static void colonelToZPM() {
-	//
-	// Field f1 = new Field();
-	// Field f2 = new Field();
-	//
-	// f1.setNeighbour(Direction.EAST, f2);
-	// f2.setNeighbour(Direction.WEST, f1);
-	//
-	// f2.addElement(new ZPM());
-	//
-	// Colonel oneill = new Colonel(f1, Direction.EAST);
-	//
-	// oneill.step();
-	// }
+		for (int i = 0; i < fieldWidth; i++) {
+			if (i == 0) {
+				System.out.print('+');
+			}
+			System.out.print('-');
+			if (i == fieldWidth - 1) {
+				System.out.print('+');
+			}
+		}
+		System.out.println();
+		for (Field rowStart = fieldReference; rowStart != null; rowStart = rowStart.getNeighbour(Direction.SOUTH)) {
 
-	public static void main(String[] args) {
-		// TODO init
+			for (Field f = rowStart; f != null; f = f.getNeighbour(Direction.EAST)) {
 
-		while (true) {
-			for (int i = 0; i < menuOptions.length; i++) {
-
-				System.out.println(i + ".\t" + menuOptions[i]);
+				if (f == rowStart) {
+					System.out.print('|');
+				}
+				System.out.print(f.getStatusString());
+				if (f.getNeighbour(Direction.EAST) == null) {
+					System.out.print('|');
+				}
 			}
 
-			System.out.print("\nKérem a sorszámot: ");
-			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			System.out.println();
+		}
+		for (int i = 0; i < fieldWidth; i++) {
+			if (i == 0) {
+				System.out.print('+');
+			}
+			System.out.print('-');
+			if (i == fieldWidth - 1) {
+				System.out.print('+');
+			}
+		}
+		System.out.println();
+	}
+
+	public static void main(String[] args) {
+
+		// syntax: java <progam-neve> [<input-file>] [<output-file>]
+
+		switch (args.length) {
+		case 2:
 
 			try {
 
-				String s = br.readLine();
+				PrintStream ps = new PrintStream(args[1]);
+				System.setOut(ps);
 
-				System.out.println();
+			} catch (FileNotFoundException e) {
 
-				if (s.equals("exit")) {
-					return;
-				}
+				System.err.println(args[1] + " nevű file nem található!");
 
-				callTree = new CallTreeElement();
-				int i = Integer.parseInt(s);
-
-				// switch (i) {
-				// case 0:
-				// init();
-				// break;
-				// case 1:
-				// colonelToEmptyField();
-				// break;
-				// case 2:
-				// colonelToGap();
-				// break;
-				// case 3:
-				// colonelToClosedDoor();
-				// break;
-				// case 4:
-				// colonelToOpenedDoor();
-				// break;
-				// case 5:
-				// colonelToWall();
-				// break;
-				// case 6:
-				// ColonelToScale();
-				// break;
-				// case 7:
-				// colonelFromScale();
-				// break;
-				// case 8:
-				// colonelShoot();
-				// break;
-				// case 9:
-				// bulletFly();
-				// break;
-				// case 10:
-				// bulletToSimpleWall();
-				// break;
-				// case 11:
-				// bulletToSpecialWall();
-				// break;
-				// case 12:
-				// colonelPickUpBox();
-				// break;
-				// case 13:
-				// colonelPutDownBox();
-				// break;
-				// case 14:
-				// createPortal();
-				// break;
-				// case 15:
-				// colonelToPortal();
-				// break;
-				// case 16:
-				// colonelToZPM();
-				// break;
-				// }
-
-				if (i == 0)
-					callTree.printCallTree(3, "     ", 0, "");
-				else if (i == 9 || i == 10 || i == 11)
-					callTree.printCallTree(1, "     ", 0, "");
-				else
-					callTree.printCallTree(2, "     ", 0, "");
-
-				br.readLine();
-
-			} catch (IOException e) {
-				e.printStackTrace();
 			}
+
+		case 1:
+
+			try {
+
+				FileInputStream fis = new FileInputStream(args[0]);
+				System.setIn(fis);
+
+			} catch (FileNotFoundException e) {
+
+				System.err.println(args[0] + " nevű file nem található!");
+			}
+
+			break;
+		}
+
+		try {
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+			String line;
+			while ((line = br.readLine()) != null) {
+
+				try {
+
+					if (line.startsWith("create maze")) {
+
+						String[] params = line.substring("create maze".length() + 1).split(" ");
+						if (params.length == 2) {
+
+							final int x = Integer.parseInt(params[0]);
+							final int y = Integer.parseInt(params[1]);
+
+							Field[] oldRow = null;
+							for (int row = 0; row < y; row++) {
+
+								Field[] newRow = new Field[x];
+								for (int col = 0; col < x; col++) {
+
+									newRow[col] = new Field();
+									if (col > 0) {
+										newRow[col - 1].setNeighbour(Direction.EAST, newRow[col]);
+										newRow[col].setNeighbour(Direction.WEST, newRow[col - 1]);
+									}
+									if (row > 0) {
+										oldRow[col].setNeighbour(Direction.SOUTH, newRow[col]);
+										newRow[col].setNeighbour(Direction.NORTH, oldRow[col]);
+									}
+									if (row == 0 && col == 0) {
+										fieldReference = newRow[0];
+									}
+								}
+								oldRow = newRow;
+							}
+
+							System.out.println("Created a " + x + " x " + y + " sized maze.");
+							drawMaze();
+
+						} else {
+							throw new IllegalArgumentException(line);
+						}
+
+					} else if (line.startsWith("create door")) {
+
+						String[] params = line.substring("create door".length() + 1).split(" ");
+						if (params.length == 3) {
+
+							final String name = params[0];
+							final int x = Integer.parseInt(params[1]);
+							final int y = Integer.parseInt(params[2]);
+
+							Door d = new Door(name);
+							Field f = fieldReference;
+							for (int i = 0; i < x; i++) {
+								f = f.getNeighbour(Direction.EAST);
+							}
+							for (int i = 0; i < y; i++) {
+								f = f.getNeighbour(Direction.SOUTH);
+							}
+
+							addElement(d, f);
+
+							System.out
+									.println("Created door '" + d.getName() + "' in (" + x + ", " + y + ") position.");
+							drawMaze();
+
+						} else {
+							throw new IllegalArgumentException(line);
+						}
+
+					}
+
+					else if (line.startsWith("create scale")) {
+
+						String[] params = line.substring("create scale".length() + 1).split(" ");
+						if (params.length == 5) {
+
+							final String name = params[0];
+							final int x = Integer.parseInt(params[1]);
+							final int y = Integer.parseInt(params[2]);
+							final int weight = Integer.parseInt(params[3]);
+							final String doorName = params[4];
+
+							Scale s = new Scale(name, (Door) elements.get(doorName).getElement(doorName), weight);
+							Field f = fieldReference;
+							for (int i = 0; i < x; i++) {
+								f = f.getNeighbour(Direction.EAST);
+							}
+							for (int i = 0; i < y; i++) {
+								f = f.getNeighbour(Direction.SOUTH);
+							}
+
+							addElement(s, f);
+
+							System.out.println("Created scale '" + name + "' in (" + x + ", " + y
+									+ ") position. Weight limit: " + weight + ".");
+							drawMaze();
+
+						} else {
+							throw new IllegalArgumentException(line);
+						}
+
+					}
+
+					// else if (line.startsWith("")) {
+					//
+					// String[] params = line.substring("".length() +
+					// 1).split("
+					// ");
+					// if (params.length == 2) {
+					//
+					// } else {
+					// throw new IllegalArgumentException(line);
+					// }
+					//
+					// }
+
+					else {
+						System.err.println("Unknown command: " + line);
+					}
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 }

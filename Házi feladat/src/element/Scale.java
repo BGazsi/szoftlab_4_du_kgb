@@ -1,12 +1,9 @@
 package element;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 import element.movable.player.Player;
-import game.Game;
 
 // Mérleget szimbolizáló osztály
 public class Scale extends Element {
@@ -18,11 +15,9 @@ public class Scale extends Element {
 	// mérlegen lévő elementek
 	private Set<Element> elements;
 
-	public Scale(Door door, int weightLimit) {
+	public Scale(String name, Door door, int weightLimit) {
 
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
+		super(name);
 
 		this.door = door;
 		this.weightLimit = weightLimit;
@@ -30,7 +25,7 @@ public class Scale extends Element {
 	}
 
 	// az összes mérlegen lévő súly
-	private int allWeight() {
+	public int allWeight() {
 
 		int sum = 0;
 		for (Element e : elements) {

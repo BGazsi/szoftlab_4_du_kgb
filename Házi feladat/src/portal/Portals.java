@@ -1,7 +1,5 @@
 package portal;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -9,7 +7,6 @@ import element.Wall;
 import element.movable.player.Player;
 import enums.PortalColour;
 import field.Field;
-import game.Game;
 
 // Portálokat szimbolizáló osztály
 public class Portals {
@@ -27,18 +24,11 @@ public class Portals {
 			this.position = position;
 			this.outputField = outputField;
 
-			// TODO CallTree
-			Game.callTree.addChildCalls(
-					new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 		}
 	}
 
 	// Új portál létrehozása
 	public static void createPortal(PortalColour colour, Wall position, Field outputField) {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
 		Portal portal = new Portal(position, outputField);
 
@@ -47,10 +37,6 @@ public class Portals {
 
 	// Egy adott falra vonatkozó ellenőrzés, hogy van-e rajta portál
 	public static boolean isPortal(Wall position, Field outputField) {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
 		for (Portal p : portals.values()) {
 

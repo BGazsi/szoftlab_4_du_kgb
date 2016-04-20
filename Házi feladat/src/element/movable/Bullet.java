@@ -1,8 +1,5 @@
 package element.movable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import element.Element;
 import enums.Direction;
 import enums.PortalColour;
@@ -15,14 +12,11 @@ public class Bullet extends Movable {
 	// a golyó által létrejövő portál színe
 	private PortalColour portalColour;
 
-	public Bullet(Field position, Direction direction, PortalColour portalColour) {
+	public Bullet(String name, Field position, Direction direction, PortalColour portalColour) {
 
-		super(position, direction);
+		super(name, position, direction);
 		this.portalColour = portalColour;
 
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 2);
 	}
 
 	// A golyó haladásáért felelős függvény
@@ -51,19 +45,11 @@ public class Bullet extends Movable {
 	// A lövedék megsemmisülésére vonatkozó függvény
 	public void destroy() {
 
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
-
-		game.removeElement(this);
+		Game.removeElement(this);
 	}
 
 	// Visszatér a lövedék által létrjövő portál színével
 	public PortalColour getPortalColour() {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
 		return portalColour;
 	}

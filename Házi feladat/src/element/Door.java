@@ -1,11 +1,7 @@
 package element;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import element.movable.Bullet;
 import element.movable.player.Player;
-import game.Game;
 
 // Ajtót reprezentáló függvény
 public class Door extends Element {
@@ -13,22 +9,20 @@ public class Door extends Element {
 	// ajtó álapotát tároló változó
 	private boolean isOpened;
 
-	public Door() {
+	public Door(String name) {
+
+		super(name);
 
 		this.isOpened = false;
 
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
-	public Door(boolean isOpened) {
+	public Door(String name, boolean isOpened) {
+
+		super(name);
 
 		this.isOpened = isOpened;
 
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
 	// Playerrel való egy mezőre kerülés
@@ -51,29 +45,22 @@ public class Door extends Element {
 	@Override
 	public void meet(Box b) {
 
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
-
 		// TODO meet
+	}
+
+	// Állapotának lekérése
+	public boolean isOpened() {
+		return isOpened;
 	}
 
 	// Ajtó kinyitása
 	public void open() {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
 		isOpened = true;
 	}
 
 	// Ajtó becsukása
 	public void close() {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
 		isOpened = false;
 	}

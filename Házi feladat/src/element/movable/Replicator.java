@@ -3,13 +3,14 @@ package element.movable;
 import element.Element;
 import enums.Direction;
 import field.Field;
+import game.Game;
 
 public class Replicator extends Movable {
 
 	private boolean needToStay;
 
-	public Replicator(Field position, Direction direction) {
-		super(position, direction);
+	public Replicator(String name, Field position, Direction direction) {
+		super(name, position, direction);
 
 		this.needToStay = false;
 	}
@@ -47,7 +48,7 @@ public class Replicator extends Movable {
 
 	public void die() {
 
-		game.removeElement(this);
+		Game.removeElement(this);
 	}
 
 	@Override

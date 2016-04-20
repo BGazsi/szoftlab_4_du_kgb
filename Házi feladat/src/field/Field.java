@@ -1,18 +1,19 @@
 package field;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
-import java.util.Stack;
 
 import element.Box;
+import element.Door;
 import element.Element;
+import element.Gap;
+import element.Scale;
+import element.Wall;
+import element.ZPM;
 import element.movable.Movable;
 import enums.Direction;
-import game.Game;
 
 // Mezőt reprezentáló osztály
 public class Field {
@@ -21,82 +22,95 @@ public class Field {
 	private Map<Direction, Field> neighbours;
 	// mezőn lévő elementek
 	private Set<Element> elements;
-	// mezőn lévő boxok
-	private Stack<Box> boxes;
 
 	public Field() {
 
 		this.neighbours = new HashMap<Direction, Field>();
 		this.elements = new HashSet<Element>();
 
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
 	// Mezőre történő lépés
-	public void enter(Movable m) {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
+	public void enter(Element e) {
 
 		for (Element element : elements) {
 
-			m.collide(element);
+			e.collide(element);
 		}
 
-		elements.add(m);
+		elements.add(e);
 	}
 
 	// Mező elhagyása
-	public void exit(Movable m) {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
+	public void exit(Element e) {
 
 		for (Element element : elements) {
 
-			m.sunder(element);
+			e.sunder(element);
 		}
 
-		elements.remove(m);
+		elements.remove(e);
 	}
 
-	public void pushBox(Box b) {
+	// A fieldet szimbolizáló karakter
+	public String getStatusString() {
 
-		boxes.push(b);
+		int priority = 0;
+		String c = " ";
+
 		for (Element e : elements) {
-			e.meet(b);
+
+			if (e instanceof Gap && 1 > priority) {
+				priority = 1;
+				c = "X";
+			} else if (e instanceof Door && 1 > priority) {
+				priority = 1;
+				Door d = (Door) e;
+				if (d.isOpened()) {
+					c = "\\";
+				} else {
+					c = "|";
+				}
+			} else if ((e instanceof Wall || e instanceof Box) && 1 > priority) {
+				priority = 1;
+				c = "" + e.getClass().getSimpleName().charAt(0);
+			} else if (e instanceof ZPM && 2 > priority) {
+				priority = 2;
+				c = "Z";
+			} else if (e instanceof Scale && 2 > priority) {
+				priority = 2;
+				Scale s = (Scale) e;
+				c = Integer.toString(s.allWeight());
+			} else if (e instanceof Movable && 3 > priority) {
+				priority = 3;
+				c = "" + e.getClass().getSimpleName().charAt(0);
+			}
 		}
+
+		// TODO Portals character
+
+		return c;
 	}
 
-	public Box popBox() {
+	public Element getElement(String name) {
 
-		Box b = boxes.pop();
 		for (Element e : elements) {
-			e.leave(b);
+			if (e.getName().equals(name)) {
+				return e;
+			}
 		}
-		return b;
+
+		return null;
 	}
 
 	// Adott irányban lévő szomszédok elkérése
 	public Field getNeighbour(Direction d) {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
 
 		return neighbours.get(d);
 	}
 
 	// Adott irányba lévő szomszédok beállítása
 	public void setNeighbour(Direction d, Field f) {
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 
 		neighbours.put(d, f);
 	}

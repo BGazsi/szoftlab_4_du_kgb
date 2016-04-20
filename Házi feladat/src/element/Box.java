@@ -1,8 +1,6 @@
 package element;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
+import element.movable.player.Player;
 import game.Game;
 
 // A dobozt szimbolizáló függvény
@@ -11,13 +9,11 @@ public class Box extends Element {
 	// a doboz súlya
 	protected int weight;
 
-	public Box(int weight) {
+	public Box(String name, int weight) {
+
+		super(name);
 
 		this.weight = weight;
-
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 3);
 	}
 
 	// Egy elementtel való ütközéskor hívódó függvény
@@ -27,14 +23,16 @@ public class Box extends Element {
 		e.meet(this);
 	}
 
+	@Override
+	public void meet(Player p) {
+
+		p.pickUp(this);
+	}
+
 	// Doboz megsemmisülése
 	public void destroy() {
 
-		// TODO CallTree
-		Game.callTree.addChildCalls(
-				new ArrayList<StackTraceElement>(Arrays.asList(Thread.currentThread().getStackTrace())), null, 1);
-
-		game.removeElement(this);
+		Game.removeElement(this);
 	}
 
 	@Override
