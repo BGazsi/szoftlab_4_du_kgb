@@ -1,0 +1,24 @@
+Created a 5 x 3 sized maze.
++-----+
+|     |
+|     |
+|     |
++-----+
+Created door 'ajto1' in (1, 1) position.
++-----+
+|     |
+| |   |
+|     |
++-----+
+Created scale 'merleg1' in (4, 1) position. Weight limit: 10.
++-----+
+|     |
+| |  0|
+|     |
++-----+
+Created scale 'merleg1' in (4, 4) position. Weight limit: 10.
++-----+
+|     |
+| |  0|
+|    0|
++-----+
