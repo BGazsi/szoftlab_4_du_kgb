@@ -18,7 +18,6 @@ public abstract class Movable extends Element {
 
 		this.position = position;
 		this.direction = direction;
-
 	}
 
 	// A mozgást leíró függvény
@@ -29,4 +28,13 @@ public abstract class Movable extends Element {
 
 		return position;
 	}
+
+	public Direction getDirection() {
+		return direction;
+	}
+
+	public void setPosition(Field position) {
+		this.position = position;
+	}
+
 }

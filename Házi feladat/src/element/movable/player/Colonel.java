@@ -20,7 +20,7 @@ public class Colonel extends Player {
 		ZMPcount++;
 
 		if (ZMPcount == 2) {
-			Game.addElement(new ZPM(null), null);
+			Game.addElement(new ZPM(null), null, true);
 		}
 	}
 

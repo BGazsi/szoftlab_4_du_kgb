@@ -33,6 +33,7 @@ public class Bullet extends Movable {
 		// régi mezőről lelép
 		position.exit(this);
 		position = nextField;
+
 	}
 
 	// Egy mezőn lévő elementel való ütközés függvénye

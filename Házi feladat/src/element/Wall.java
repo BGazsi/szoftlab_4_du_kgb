@@ -22,9 +22,9 @@ public class Wall extends Element {
 	@Override
 	public void meet(Player p) {
 
-		if (Portals.isPortal(this, p.getPosition())) {
+		if (Portals.findPortal(this, p.getPosition()) != null) {
 
-			Portals.send(p);
+			Portals.send(p, this);
 
 		} else {
 

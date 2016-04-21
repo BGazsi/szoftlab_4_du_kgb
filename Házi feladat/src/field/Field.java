@@ -14,19 +14,28 @@ import element.Wall;
 import element.ZPM;
 import element.movable.Movable;
 import enums.Direction;
+import enums.PortalColour;
+import portal.Portals;
 
 // Mezőt reprezentáló osztály
 public class Field {
 
+	private static int nextID = 0;
+	private int ID;
 	// mező szomszédai
 	private Map<Direction, Field> neighbours;
 	// mezőn lévő elementek
 	private Set<Element> elements;
 
+	private boolean isFull;
+
 	public Field() {
+
+		this.ID = nextID++;
 
 		this.neighbours = new HashMap<Direction, Field>();
 		this.elements = new HashSet<Element>();
+		this.isFull = false;
 
 	}
 
@@ -71,7 +80,17 @@ public class Field {
 				} else {
 					c = "|";
 				}
-			} else if ((e instanceof Wall || e instanceof Box) && 1 > priority) {
+			} else if (e instanceof Wall && 1 > priority) {
+				priority = 1;
+				Wall w = (Wall) e;
+				PortalColour pc = Portals.findPortal(w, null);
+
+				if (pc != null) {
+					c = ("" + pc.toString().charAt(0)).toLowerCase();
+				} else {
+					c = "" + e.getClass().getSimpleName().charAt(0);
+				}
+			} else if (e instanceof Box && 1 > priority) {
 				priority = 1;
 				c = "" + e.getClass().getSimpleName().charAt(0);
 			} else if (e instanceof ZPM && 2 > priority) {
@@ -87,9 +106,20 @@ public class Field {
 			}
 		}
 
-		// TODO Portals character
-
 		return c;
+	}
+
+	@Override
+	public int hashCode() {
+
+		return ID;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+
+		Field f = (Field) obj;
+		return this.ID == f.ID;
 	}
 
 	public Element getElement(String name) {
@@ -109,9 +139,17 @@ public class Field {
 		return neighbours.get(d);
 	}
 
+	public boolean isFull() {
+		return isFull;
+	}
+
 	// Adott irányba lévő szomszédok beállítása
 	public void setNeighbour(Direction d, Field f) {
 
 		neighbours.put(d, f);
+	}
+
+	public void setFull(boolean isFull) {
+		this.isFull = isFull;
 	}
 }

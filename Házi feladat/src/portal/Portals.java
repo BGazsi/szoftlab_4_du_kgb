@@ -16,41 +16,47 @@ public class Portals {
 
 	private static class Portal {
 
-		private Wall position;
+		private Wall wall;
 		private Field outputField;
 
-		public Portal(Wall position, Field outputField) {
+		public Portal(Wall wall, Field outputField) {
 
-			this.position = position;
+			this.wall = wall;
 			this.outputField = outputField;
 
 		}
 	}
 
 	// Új portál létrehozása
-	public static void createPortal(PortalColour colour, Wall position, Field outputField) {
+	public static void createPortal(PortalColour colour, Wall wall, Field outputField) {
 
-		Portal portal = new Portal(position, outputField);
+		Portal portal = new Portal(wall, outputField);
 
 		portals.put(colour, portal);
 	}
 
 	// Egy adott falra vonatkozó ellenőrzés, hogy van-e rajta portál
-	public static boolean isPortal(Wall position, Field outputField) {
+	public static PortalColour findPortal(Wall wall, Field outputField) {
 
-		for (Portal p : portals.values()) {
+		for (PortalColour pc : portals.keySet()) {
 
-			if (p.position == position && p.outputField == outputField)
-				return true;
+			Portal p = portals.get(pc);
+			if (p.wall == wall && (outputField == null || p.outputField == outputField))
+				return pc;
 		}
 
-		return false;
+		return null;
 	}
 
 	// Az Playert továbbító függvény
-	public static void send(Player c) {
+	public static void send(Player player, Wall wall) {
 
-		// TODO send
-		c.stay();
+		player.stay();
+		Field oldField = player.getPosition();
+		Field newField = portals.get(findPortal(wall, oldField).getPair()).outputField;
+
+		oldField.exit(player);
+		player.setPosition(newField);
+		newField.enter(player);
 	}
 }
