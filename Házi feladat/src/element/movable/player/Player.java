@@ -102,7 +102,7 @@ public abstract class Player extends Movable {
 	@Override
 	public int getWeight() {
 
-		return weight;
+		return box == null ? weight : weight + box.getWeight();
 	}
 
 	public Box getBox() {
