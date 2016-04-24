@@ -405,7 +405,6 @@ public class Game {
 						String[] params = line.substring("create portal".length() + 1).split(" ");
 						if (params.length == 5) {
 
-							final String name = params[0];
 							final PortalColour portalColour = PortalColour.valueOf(params[1]);
 							final Wall wall = (Wall) elements.get(params[2]);
 							final int x = Integer.parseInt(params[3]);
@@ -504,7 +503,6 @@ public class Game {
 							final String name = params[0];
 
 							Movable m = (Movable) elements.get(name);
-							Direction d = m.getDirection();
 
 							Field oldField = m.getPosition();
 							Element oldLastAdded = lastAdded;
@@ -515,8 +513,6 @@ public class Game {
 							if (oldField != newField) {
 								System.out
 										.println("'" + m.getName() + "' stepped " + m.getDirection().toString() + ".");
-								// TODO remove next line
-								drawMaze();
 								if (newField.isEmpty()) {
 
 									Entry<Integer, Integer> e = getCoordinate(newField);
@@ -624,22 +620,7 @@ public class Game {
 							throw new IllegalArgumentException(line);
 						}
 
-					}
-
-					// else if (line.startsWith("")) {
-					//
-					// String[] params = line.substring("".length() +
-					// 1).split("
-					// ");
-					// if (params.length == 2) {
-					//
-					// } else {
-					// throw new IllegalArgumentException(line);
-					// }
-					//
-					// }
-
-					else {
+					} else {
 						System.err.println("Unknown command: " + line);
 					}
 
