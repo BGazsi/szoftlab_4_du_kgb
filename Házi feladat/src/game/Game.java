@@ -6,19 +6,25 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.util.AbstractMap;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Random;
 
+import element.Box;
 import element.Door;
 import element.Element;
 import element.Gap;
 import element.Scale;
 import element.Wall;
 import element.ZPM;
+import element.movable.Bullet;
 import element.movable.Movable;
 import element.movable.Replicator;
 import element.movable.player.Colonel;
 import element.movable.player.Jaffa;
+import element.movable.player.Player;
 import enums.Direction;
 import enums.PortalColour;
 import field.Field;
@@ -28,14 +34,76 @@ import portal.Portals;
 public class Game {
 
 	private static Field fieldReference;
-	private static Map<String, Field> elements = new HashMap<String, Field>();
+	private static int fieldWidth = -1;
+	private static int fieldHeight = -1;
+	private static Element lastAdded = null;
+	private static Element lastRemoved = null;
+	private static Map<String, Element> elements = new HashMap<String, Element>();
 
-	// FIXME !!! nem jó hogy tároljuk hozzá a fildet, mert mozognak a dolgok
-	// 8.2.27
+	private static Field findField(String elementName) {
+
+		for (Field rowStart = fieldReference; rowStart != null; rowStart = rowStart.getNeighbour(Direction.SOUTH)) {
+			for (Field f = rowStart; f != null; f = f.getNeighbour(Direction.EAST)) {
+				if (f.getElement(elementName) != null) {
+					return f;
+				}
+			}
+		}
+
+		return null;
+	}
+
+	private static Field getField(int x, int y) {
+
+		Field f = fieldReference;
+		for (int i = 0; i < x; i++) {
+			f = f.getNeighbour(Direction.EAST);
+		}
+		for (int i = 0; i < y; i++) {
+			f = f.getNeighbour(Direction.SOUTH);
+		}
+
+		return f;
+	}
+
+	private static Entry<Integer, Integer> getCoordinate(Field f) {
+
+		int x = 0;
+		int y = 0;
+		Field result = fieldReference;
+		Field rowStart = fieldReference;
+
+		while (result != f) {
+
+			result = result.getNeighbour(Direction.EAST);
+			x++;
+
+			if (result == null) {
+
+				rowStart = rowStart.getNeighbour(Direction.SOUTH);
+				result = rowStart;
+				x = 0;
+				y++;
+			}
+		}
+
+		return new AbstractMap.SimpleEntry<Integer, Integer>(x, y);
+	}
+
 	public static boolean addElement(Element e, Field f, boolean setFull) {
 
 		if (f == null) {
-			// TODO random field
+
+			Random rnd = new Random();
+			int x = -1;
+			int y = -1;
+
+			do {
+				x = rnd.nextInt(fieldWidth);
+				y = rnd.nextInt(fieldHeight);
+				f = getField(x, y);
+			} while (f.isFull());
+
 		}
 
 		if (elements.containsKey(e.getName())) {
@@ -47,7 +115,8 @@ public class Game {
 		if (!f.isFull()) {
 
 			f.setFull(setFull);
-			elements.put(e.getName(), f);
+			elements.put(e.getName(), e);
+			lastAdded = e;
 			f.enter(e);
 			return true;
 
@@ -58,16 +127,12 @@ public class Game {
 
 	public static void removeElement(Element e) {
 
-		elements.remove(e.getName()).exit(e);
-
+		elements.remove(e.getName());
+		findField(e.getName()).exit(e);
+		lastRemoved = e;
 	}
 
 	private static void drawMaze() {
-
-		int fieldWidth = 0;
-		for (Field f = fieldReference; f != null; f = f.getNeighbour(Direction.EAST)) {
-			fieldWidth++;
-		}
 
 		for (int i = 0; i < fieldWidth; i++) {
 			if (i == 0) {
@@ -177,6 +242,9 @@ public class Game {
 								oldRow = newRow;
 							}
 
+							fieldWidth = x;
+							fieldHeight = y;
+
 							System.out.println("Created a " + x + " x " + y + " sized maze.");
 							drawMaze();
 
@@ -194,13 +262,7 @@ public class Game {
 							final int y = Integer.parseInt(params[2]);
 
 							Door d = new Door(name);
-							Field f = fieldReference;
-							for (int i = 0; i < x; i++) {
-								f = f.getNeighbour(Direction.EAST);
-							}
-							for (int i = 0; i < y; i++) {
-								f = f.getNeighbour(Direction.SOUTH);
-							}
+							Field f = getField(x, y);
 
 							boolean success = addElement(d, f, true);
 
@@ -225,13 +287,7 @@ public class Game {
 							final int y = Integer.parseInt(params[2]);
 
 							ZPM z = new ZPM(name);
-							Field f = fieldReference;
-							for (int i = 0; i < x; i++) {
-								f = f.getNeighbour(Direction.EAST);
-							}
-							for (int i = 0; i < y; i++) {
-								f = f.getNeighbour(Direction.SOUTH);
-							}
+							Field f = getField(x, y);
 
 							boolean success = addElement(z, f, true);
 
@@ -245,7 +301,30 @@ public class Game {
 							throw new IllegalArgumentException(line);
 						}
 
-					} else if (line.startsWith("create scale")) {
+					} else if (line.startsWith("create box")) {
+
+						String[] params = line.substring("create box".length() + 1).split(" ");
+						if (params.length == 3) {
+
+							final String name = params[0];
+							final int x = Integer.parseInt(params[1]);
+							final int y = Integer.parseInt(params[2]);
+
+							Box b = new Box(name, 1);
+							Field f = getField(x, y);
+
+							addElement(b, f, false);
+
+							System.out.println("Created box '" + b.getName() + "' in (" + x + "," + y + ") position.");
+							drawMaze();
+
+						} else {
+							throw new IllegalArgumentException(line);
+						}
+
+					}
+
+					else if (line.startsWith("create scale")) {
 
 						String[] params = line.substring("create scale".length() + 1).split(" ");
 						if (params.length == 5) {
@@ -256,16 +335,10 @@ public class Game {
 							final int weight = Integer.parseInt(params[3]);
 							final String doorName = params[4];
 
-							Scale s = new Scale(name, (Door) elements.get(doorName).getElement(doorName), weight);
-							Field f = fieldReference;
-							for (int i = 0; i < x; i++) {
-								f = f.getNeighbour(Direction.EAST);
-							}
-							for (int i = 0; i < y; i++) {
-								f = f.getNeighbour(Direction.SOUTH);
-							}
+							Scale s = new Scale(name, (Door) elements.get(doorName), weight);
+							Field f = getField(x, y);
 
-							boolean success = addElement(s, f, true);
+							boolean success = addElement(s, f, false);
 
 							System.out.println("Created scale '" + s.getName() + "' in (" + x + ", " + y
 									+ ") position. Weight limit: " + weight + ".");
@@ -288,13 +361,7 @@ public class Game {
 							final int y = Integer.parseInt(params[2]);
 
 							Gap g = new Gap(name);
-							Field f = fieldReference;
-							for (int i = 0; i < x; i++) {
-								f = f.getNeighbour(Direction.EAST);
-							}
-							for (int i = 0; i < y; i++) {
-								f = f.getNeighbour(Direction.SOUTH);
-							}
+							Field f = getField(x, y);
 
 							boolean success = addElement(g, f, true);
 
@@ -318,13 +385,7 @@ public class Game {
 							final int y = Integer.parseInt(params[2]);
 
 							Wall w = new Wall(name, true);
-							Field f = fieldReference;
-							for (int i = 0; i < x; i++) {
-								f = f.getNeighbour(Direction.EAST);
-							}
-							for (int i = 0; i < y; i++) {
-								f = f.getNeighbour(Direction.SOUTH);
-							}
+							Field f = getField(x, y);
 
 							boolean success = addElement(w, f, true);
 
@@ -346,22 +407,14 @@ public class Game {
 
 							final String name = params[0];
 							final PortalColour portalColour = PortalColour.valueOf(params[1]);
-							final Wall wall = (Wall) elements.get(params[2]).getElement(params[2]);
+							final Wall wall = (Wall) elements.get(params[2]);
 							final int x = Integer.parseInt(params[3]);
 							final int y = Integer.parseInt(params[4]);
 
-							Field f = fieldReference;
-							for (int i = 0; i < x; i++) {
-								f = f.getNeighbour(Direction.EAST);
-							}
-							for (int i = 0; i < y; i++) {
-								f = f.getNeighbour(Direction.SOUTH);
-							}
+							Field f = getField(x, y);
 
 							Portals.createPortal(portalColour, wall, f);
 
-							System.out.println("Created " + portalColour.toString() + " portal '" + name + "' on '"
-									+ wall.getName() + "' wall.");
 							drawMaze();
 
 						} else {
@@ -377,13 +430,7 @@ public class Game {
 							final int x = Integer.parseInt(params[1]);
 							final int y = Integer.parseInt(params[2]);
 
-							Field f = fieldReference;
-							for (int i = 0; i < x; i++) {
-								f = f.getNeighbour(Direction.EAST);
-							}
-							for (int i = 0; i < y; i++) {
-								f = f.getNeighbour(Direction.SOUTH);
-							}
+							Field f = getField(x, y);
 							Colonel c = new Colonel(name, 1, f, Direction.NORTH);
 
 							boolean success = addElement(c, f, true);
@@ -408,13 +455,7 @@ public class Game {
 							final int x = Integer.parseInt(params[1]);
 							final int y = Integer.parseInt(params[2]);
 
-							Field f = fieldReference;
-							for (int i = 0; i < x; i++) {
-								f = f.getNeighbour(Direction.EAST);
-							}
-							for (int i = 0; i < y; i++) {
-								f = f.getNeighbour(Direction.SOUTH);
-							}
+							Field f = getField(x, y);
 							Jaffa j = new Jaffa(name, 1, f, Direction.NORTH);
 
 							boolean success = addElement(j, f, true);
@@ -439,13 +480,7 @@ public class Game {
 							final int x = Integer.parseInt(params[1]);
 							final int y = Integer.parseInt(params[2]);
 
-							Field f = fieldReference;
-							for (int i = 0; i < x; i++) {
-								f = f.getNeighbour(Direction.EAST);
-							}
-							for (int i = 0; i < y; i++) {
-								f = f.getNeighbour(Direction.SOUTH);
-							}
+							Field f = getField(x, y);
 							Replicator r = new Replicator(name, f, Direction.NORTH);
 
 							boolean success = addElement(r, f, true);
@@ -468,19 +503,121 @@ public class Game {
 
 							final String name = params[0];
 
-							Movable m = (Movable) elements.get(name).getElement(name);
+							Movable m = (Movable) elements.get(name);
 							Direction d = m.getDirection();
 
 							Field oldField = m.getPosition();
+							Element oldLastAdded = lastAdded;
 							m.step();
+							Element newLastAdded = lastAdded;
 							Field newField = m.getPosition();
 
 							if (oldField != newField) {
-								System.out.println("'" + m.getName() + "' stepped " + d.toString() + ".");
-								// TODO remove
+								System.out
+										.println("'" + m.getName() + "' stepped " + m.getDirection().toString() + ".");
+								// TODO remove next line
 								drawMaze();
+								if (newField.isEmpty()) {
+
+									Entry<Integer, Integer> e = getCoordinate(newField);
+
+									System.out.println("Created empty field in (" + e.getKey() + "," + e.getValue()
+											+ ") position.");
+								}
 							} else {
 								System.out.println("Step failed.");
+							}
+
+							if (oldLastAdded != newLastAdded) {
+
+								Entry<Integer, Integer> e = getCoordinate(findField(newLastAdded.getName()));
+
+								System.out.println("Created zpm '" + newLastAdded + "' in (" + e.getKey() + ","
+										+ e.getValue() + ") position.");
+								drawMaze();
+							}
+
+						} else {
+							throw new IllegalArgumentException(line);
+						}
+
+					} else if (line.startsWith("rotate")) {
+
+						String[] params = line.substring("rotate".length() + 1).split(" ");
+						if (params.length == 2) {
+
+							final String name = params[0];
+							final Direction direction = Direction.valueOf(params[1]);
+
+							Movable m = (Movable) elements.get(name);
+							m.setDirection(direction);
+
+							System.out.println("'" + m.getName() + "' has been rotated in the direction '"
+									+ m.getDirection().toString() + "'.");
+							drawMaze();
+
+						} else {
+							throw new IllegalArgumentException(line);
+						}
+
+					} else if (line.startsWith("pickup")) {
+
+						String[] params = line.substring("pickup".length() + 1).split(" ");
+						if (params.length == 1) {
+
+							final String name = params[0];
+
+							Player p = (Player) elements.get(name);
+							Box bb = p.getBox();
+
+							p.step();
+							p.setDirection(p.getDirection().getOpposite());
+							p.step();
+							p.setDirection(p.getDirection().getOpposite());
+
+							Box ba = p.getBox();
+
+							if (bb != ba) {
+								System.out.println("'" + p.getName() + "' picked up a box '" + ba.getName() + "'.");
+							}
+
+						} else {
+							throw new IllegalArgumentException(line);
+						}
+
+					} else if (line.startsWith("putdown")) {
+
+						String[] params = line.substring("putdown".length() + 1).split(" ");
+						if (params.length == 1) {
+
+							final String name = params[0];
+
+							Player p = (Player) elements.get(name);
+
+							p.putDownBox();
+
+							System.out.println("'" + p.getName() + "' put down a box '" + lastAdded + "'.");
+
+						} else {
+							throw new IllegalArgumentException(line);
+						}
+
+					} else if (line.startsWith("shoot")) {
+
+						String[] params = line.substring("shoot".length() + 1).split(" ");
+						if (params.length == 2) {
+
+							final PortalColour portalColour = PortalColour.valueOf(params[0]);
+							final String name = params[1];
+
+							Player p = (Player) elements.get(name);
+
+							System.out.println("'" + p.getName() + "' shot a " + portalColour.toString() + " bullet.");
+
+							p.shoot(portalColour);
+
+							if (lastRemoved instanceof Bullet) {
+								System.out.println("Bullet has been destroyed.");
 							}
 
 						} else {

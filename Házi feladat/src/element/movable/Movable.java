@@ -37,4 +37,7 @@ public abstract class Movable extends Element {
 		this.position = position;
 	}
 
+	public void setDirection(Direction direction) {
+		this.direction = direction;
+	}
 }

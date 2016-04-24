@@ -10,7 +10,7 @@ public class Scale extends Element {
 
 	// mérleghez tartozó ajtó referenciája
 	private Door door;
-	//
+	// súlykorlát
 	private int weightLimit;
 	// mérlegen lévő elementek
 	private Set<Element> elements;

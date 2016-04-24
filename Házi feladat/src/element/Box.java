@@ -24,9 +24,15 @@ public class Box extends Element {
 	}
 
 	@Override
+	public void sunder(Element e) {
+
+		e.leave(this);
+	}
+
+	@Override
 	public void meet(Player p) {
 
-		p.pickUp(this);
+		p.pickUpBox(this);
 	}
 
 	// Doboz megsemmisülése

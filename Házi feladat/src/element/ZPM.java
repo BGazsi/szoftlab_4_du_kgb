@@ -14,6 +14,6 @@ public class ZPM extends Element {
 	@Override
 	public void meet(Player p) {
 
-		p.pickUpZPM();
+		p.pickUpZPM(this);
 	}
 }

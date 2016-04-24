@@ -1,6 +1,8 @@
 package element.movable.player;
 
+import element.Box;
 import element.Element;
+import element.ZPM;
 import element.movable.Bullet;
 import element.movable.Movable;
 import enums.Direction;
@@ -11,7 +13,7 @@ import game.Game;
 public abstract class Player extends Movable {
 
 	protected int weight;
-	protected Element element;
+	protected Box box;
 	protected int ZMPcount;
 	protected boolean needToStay;
 
@@ -23,7 +25,7 @@ public abstract class Player extends Movable {
 		this.needToStay = false;
 	}
 
-	public abstract void pickUpZPM();
+	public abstract void pickUpZPM(ZPM z);
 
 	@Override
 	public void step() {
@@ -60,25 +62,35 @@ public abstract class Player extends Movable {
 		e.leave(this);
 	}
 
-	public Bullet shoot(PortalColour color) {
+	@Override
+	public void meet(Player p) {
 
-		return new Bullet(null, position, direction, color);
+		p.stay();
 	}
 
-	public void pickUp(Element e) {
+	public void shoot(PortalColour color) {
 
-		if (element == null) {
-			element = e;
-			position.exit(e);
+		Bullet b = new Bullet(null, position, direction, color);
+
+		Game.addElement(b, position, false);
+		b.step();
+	}
+
+	public void pickUpBox(Box b) {
+
+		if (box == null) {
+
+			box = b;
+			Game.removeElement(b);
 		}
 	}
 
-	public void putDown() {
+	public void putDownBox() {
 
-		if (element != null) {
+		if (box != null) {
 
-			position.enter(element);
-			element = null;
+			Game.addElement(box, position.getNeighbour(direction), false);
+			box = null;
 		}
 	}
 
@@ -91,5 +103,9 @@ public abstract class Player extends Movable {
 	public int getWeight() {
 
 		return weight;
+	}
+
+	public Box getBox() {
+		return box;
 	}
 }

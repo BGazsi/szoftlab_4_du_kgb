@@ -14,6 +14,10 @@ public abstract class Element {
 
 	public Element(String name) {
 
+		if (name == null) {
+			name = getNewName();
+		}
+
 		this.name = name;
 	}
 

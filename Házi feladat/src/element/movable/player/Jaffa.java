@@ -1,7 +1,9 @@
 package element.movable.player;
 
+import element.ZPM;
 import enums.Direction;
 import field.Field;
+import game.Game;
 
 public class Jaffa extends Player {
 
@@ -10,8 +12,9 @@ public class Jaffa extends Player {
 	}
 
 	@Override
-	public void pickUpZPM() {
+	public void pickUpZPM(ZPM z) {
 
 		ZMPcount++;
+		Game.removeElement(z);
 	}
 }

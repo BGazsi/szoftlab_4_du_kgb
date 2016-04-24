@@ -42,12 +42,14 @@ public class Field {
 	// Mezőre történő lépés
 	public void enter(Element e) {
 
-		for (Element element : elements) {
+		Set<Element> elementsCopy = new HashSet<Element>(elements);
+
+		elements.add(e);
+
+		for (Element element : elementsCopy) {
 
 			e.collide(element);
 		}
-
-		elements.add(e);
 	}
 
 	// Mező elhagyása
@@ -137,6 +139,10 @@ public class Field {
 	public Field getNeighbour(Direction d) {
 
 		return neighbours.get(d);
+	}
+
+	public boolean isEmpty() {
+		return elements.isEmpty();
 	}
 
 	public boolean isFull() {

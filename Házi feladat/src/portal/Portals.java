@@ -33,6 +33,9 @@ public class Portals {
 		Portal portal = new Portal(wall, outputField);
 
 		portals.put(colour, portal);
+
+		// TODO remove next line
+		System.out.println("Created " + colour.toString() + " portal on '" + wall.getName() + "' wall.");
 	}
 
 	// Egy adott falra vonatkozó ellenőrzés, hogy van-e rajta portál

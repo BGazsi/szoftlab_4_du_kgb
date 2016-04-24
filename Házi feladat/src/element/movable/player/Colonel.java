@@ -15,11 +15,12 @@ public class Colonel extends Player {
 
 	// Ezredes ZPM felvétele
 	@Override
-	public void pickUpZPM() {
+	public void pickUpZPM(ZPM z) {
 
 		ZMPcount++;
+		Game.removeElement(z);
 
-		if (ZMPcount == 2) {
+		if (ZMPcount % 2 == 0) {
 			Game.addElement(new ZPM(null), null, true);
 		}
 	}

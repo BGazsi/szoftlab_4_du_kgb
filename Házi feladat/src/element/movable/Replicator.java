@@ -1,6 +1,7 @@
 package element.movable;
 
 import element.Element;
+import element.movable.player.Player;
 import enums.Direction;
 import field.Field;
 import game.Game;
@@ -41,19 +42,21 @@ public class Replicator extends Movable {
 		}
 	}
 
-	public void stay() {
-
-		needToStay = true;
-	}
-
 	public void die() {
 
 		Game.removeElement(this);
 	}
 
 	@Override
+	public void meet(Player p) {
+
+		p.stay();
+	}
+
+	@Override
 	public void meet(Bullet b) {
 
 		die();
+		b.destroy();
 	}
 }
