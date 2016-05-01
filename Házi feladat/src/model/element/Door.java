@@ -1,7 +1,7 @@
-package element;
+package model.element;
 
-import element.movable.Bullet;
-import element.movable.player.Player;
+import model.element.movable.Bullet;
+import model.element.movable.player.Player;
 
 // Ajtót reprezentáló függvény
 public class Door extends Element {
@@ -9,20 +9,14 @@ public class Door extends Element {
 	// ajtó álapotát tároló változó
 	private boolean isOpened;
 
-	public Door(String name) {
-
-		super(name);
+	public Door() {
 
 		this.isOpened = false;
-
 	}
 
-	public Door(String name, boolean isOpened) {
-
-		super(name);
+	public Door(boolean isOpened) {
 
 		this.isOpened = isOpened;
-
 	}
 
 	// Playerrel való egy mezőre kerülés
@@ -48,7 +42,7 @@ public class Door extends Element {
 		// TODO meet
 	}
 
-	// Állapotának lekérése
+	// Allapotának lekérése
 	public boolean isOpened() {
 		return isOpened;
 	}

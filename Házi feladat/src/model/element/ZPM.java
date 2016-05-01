@@ -1,14 +1,9 @@
-package element;
+package model.element;
 
-import element.movable.player.Player;
+import model.element.movable.player.Player;
 
 // ZPMet reprezentáló osztály
 public class ZPM extends Element {
-
-	public ZPM(String name) {
-
-		super(name);
-	}
 
 	// Playerrel való egy mezőre kerülés
 	@Override

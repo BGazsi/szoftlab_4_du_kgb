@@ -1,8 +1,8 @@
-package element;
+package model.element;
 
-import element.movable.Bullet;
-import element.movable.player.Player;
-import portal.Portals;
+import model.element.movable.Bullet;
+import model.element.movable.player.Player;
+import model.portal.Portals;
 
 // Falat reprezentáló osztály
 public class Wall extends Element {
@@ -10,12 +10,9 @@ public class Wall extends Element {
 	// lőhető, azaz speciális-e
 	private boolean isShootable;
 
-	public Wall(String name, boolean isShootable) {
-
-		super(name);
+	public Wall(boolean isShootable) {
 
 		this.isShootable = isShootable;
-
 	}
 
 	// Playerrel való egy mezőre kerülés

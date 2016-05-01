@@ -1,16 +1,11 @@
-package element;
+package model.element;
 
-import element.movable.Replicator;
-import element.movable.player.Player;
-import game.Game;
+import controller.Game;
+import model.element.movable.Replicator;
+import model.element.movable.player.Player;
 
 // Szakadékot szombolizáló osztály
 public class Gap extends Element {
-
-	public Gap(String name) {
-
-		super(name);
-	}
 
 	// Playerrel való egy mezőre kerülés
 	@Override

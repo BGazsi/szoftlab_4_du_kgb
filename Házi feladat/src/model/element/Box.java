@@ -1,7 +1,7 @@
-package element;
+package model.element;
 
-import element.movable.player.Player;
-import game.Game;
+import controller.Game;
+import model.element.movable.player.Player;
 
 // A dobozt szimbolizáló függvény
 public class Box extends Element {
@@ -9,9 +9,7 @@ public class Box extends Element {
 	// a doboz súlya
 	protected int weight;
 
-	public Box(String name, int weight) {
-
-		super(name);
+	public Box(int weight) {
 
 		this.weight = weight;
 	}

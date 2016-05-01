@@ -1,4 +1,4 @@
-package enums;
+package model.enums;
 
 // A portál színét jelölő enumeráció
 public enum PortalColour {

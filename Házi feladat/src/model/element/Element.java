@@ -1,25 +1,11 @@
-package element;
+package model.element;
 
-import element.movable.Bullet;
-import element.movable.Replicator;
-import element.movable.player.Player;
+import model.element.movable.Bullet;
+import model.element.movable.Replicator;
+import model.element.movable.player.Player;
 
 // Játékban előforduló objektumok ősosztálya
 public abstract class Element {
-
-	// következő generálandó ID
-	private static int nextID = 0;
-	// elementet azonosító név
-	protected String name;
-
-	public Element(String name) {
-
-		if (name == null) {
-			name = getNewName();
-		}
-
-		this.name = name;
-	}
 
 	// Egy elemmel való utközés
 	public void collide(Element e) {
@@ -69,20 +55,7 @@ public abstract class Element {
 		// NOTHING TO DO
 	}
 
-	public static String getNewName() {
-		return "Element#" + Integer.toString(nextID++);
-	}
-
 	public int getWeight() {
 		return 0;
 	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 }

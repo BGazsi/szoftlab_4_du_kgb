@@ -1,8 +1,8 @@
-package element.movable;
+package model.element.movable;
 
-import element.Element;
-import enums.Direction;
-import field.Field;
+import model.element.Element;
+import model.enums.Direction;
+import model.field.Field;
 
 // "Mozgásra képes" osztályok ősosztálya
 public abstract class Movable extends Element {
@@ -12,9 +12,7 @@ public abstract class Movable extends Element {
 	// irány
 	protected Direction direction;
 
-	public Movable(String name, Field position, Direction direction) {
-
-		super(name);
+	public Movable(Field position, Direction direction) {
 
 		this.position = position;
 		this.direction = direction;

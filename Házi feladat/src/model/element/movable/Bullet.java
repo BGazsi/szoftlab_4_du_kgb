@@ -1,10 +1,10 @@
-package element.movable;
+package model.element.movable;
 
-import element.Element;
-import enums.Direction;
-import enums.PortalColour;
-import field.Field;
-import game.Game;
+import controller.Game;
+import model.element.Element;
+import model.enums.Direction;
+import model.enums.PortalColour;
+import model.field.Field;
 
 // Magát a lövedéket reprezentáló osztály
 public class Bullet extends Movable {
@@ -12,9 +12,9 @@ public class Bullet extends Movable {
 	// a golyó által létrejövő portál színe
 	private PortalColour portalColour;
 
-	public Bullet(String name, Field position, Direction direction, PortalColour portalColour) {
+	public Bullet(Field position, Direction direction, PortalColour portalColour) {
 
-		super(name, position, direction);
+		super(position, direction);
 		this.portalColour = portalColour;
 
 	}

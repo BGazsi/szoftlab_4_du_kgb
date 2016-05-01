@@ -1,9 +1,9 @@
-package element;
+package model.element;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import element.movable.player.Player;
+import model.element.movable.player.Player;
 
 // Mérleget szimbolizáló osztály
 public class Scale extends Element {
@@ -15,9 +15,7 @@ public class Scale extends Element {
 	// mérlegen lévő elementek
 	private Set<Element> elements;
 
-	public Scale(String name, Door door, int weightLimit) {
-
-		super(name);
+	public Scale(Door door, int weightLimit) {
 
 		this.door = door;
 		this.weightLimit = weightLimit;

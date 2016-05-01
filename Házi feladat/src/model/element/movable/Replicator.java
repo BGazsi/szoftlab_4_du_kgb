@@ -1,17 +1,18 @@
-package element.movable;
+package model.element.movable;
 
-import element.Element;
-import element.movable.player.Player;
-import enums.Direction;
-import field.Field;
-import game.Game;
+import controller.Game;
+import model.element.Element;
+import model.element.movable.player.Player;
+import model.enums.Direction;
+import model.field.Field;
 
 public class Replicator extends Movable {
 
 	private boolean needToStay;
 
-	public Replicator(String name, Field position, Direction direction) {
-		super(name, position, direction);
+	public Replicator(Field position, Direction direction) {
+
+		super(position, direction);
 
 		this.needToStay = false;
 	}

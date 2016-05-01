@@ -1,14 +1,14 @@
-package element.movable.player;
+package model.element.movable.player;
 
-import element.Box;
-import element.Element;
-import element.ZPM;
-import element.movable.Bullet;
-import element.movable.Movable;
-import enums.Direction;
-import enums.PortalColour;
-import field.Field;
-import game.Game;
+import controller.Game;
+import model.element.Box;
+import model.element.Element;
+import model.element.ZPM;
+import model.element.movable.Bullet;
+import model.element.movable.Movable;
+import model.enums.Direction;
+import model.enums.PortalColour;
+import model.field.Field;
 
 public abstract class Player extends Movable {
 
@@ -17,9 +17,9 @@ public abstract class Player extends Movable {
 	protected int ZMPcount;
 	protected boolean needToStay;
 
-	public Player(String name, int weight, Field position, Direction direction) {
+	public Player(int weight, Field position, Direction direction) {
 
-		super(name, position, direction);
+		super(position, direction);
 
 		this.weight = weight;
 		this.needToStay = false;
@@ -70,9 +70,9 @@ public abstract class Player extends Movable {
 
 	public void shoot(PortalColour color) {
 
-		Bullet b = new Bullet(null, position, direction, color);
+		Bullet b = new Bullet(position, direction, color);
 
-		Game.addElement(b, position, false);
+		Game.addElement(b, position);
 		b.step();
 	}
 
@@ -89,7 +89,7 @@ public abstract class Player extends Movable {
 
 		if (box != null) {
 
-			Game.addElement(box, position.getNeighbour(direction), false);
+			Game.addElement(box, position.getNeighbour(direction));
 			box = null;
 		}
 	}

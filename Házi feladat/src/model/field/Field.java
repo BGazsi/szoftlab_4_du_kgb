@@ -1,42 +1,34 @@
-package field;
+package model.field;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import element.Box;
-import element.Door;
-import element.Element;
-import element.Gap;
-import element.Scale;
-import element.Wall;
-import element.ZPM;
-import element.movable.Movable;
-import enums.Direction;
-import enums.PortalColour;
-import portal.Portals;
+import model.element.Box;
+import model.element.Door;
+import model.element.Element;
+import model.element.Gap;
+import model.element.Scale;
+import model.element.Wall;
+import model.element.ZPM;
+import model.element.movable.Movable;
+import model.enums.Direction;
+import model.enums.PortalColour;
+import model.portal.Portals;
 
 // Mezőt reprezentáló osztály
 public class Field {
 
-	private static int nextID = 0;
-	private int ID;
 	// mező szomszédai
 	private Map<Direction, Field> neighbours;
 	// mezőn lévő elementek
 	private Set<Element> elements;
 
-	private boolean isFull;
-
 	public Field() {
-
-		this.ID = nextID++;
 
 		this.neighbours = new HashMap<Direction, Field>();
 		this.elements = new HashSet<Element>();
-		this.isFull = false;
-
 	}
 
 	// Mezőre történő lépés
@@ -111,28 +103,8 @@ public class Field {
 		return c;
 	}
 
-	@Override
-	public int hashCode() {
-
-		return ID;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-
-		Field f = (Field) obj;
-		return this.ID == f.ID;
-	}
-
-	public Element getElement(String name) {
-
-		for (Element e : elements) {
-			if (e.getName().equals(name)) {
-				return e;
-			}
-		}
-
-		return null;
+	public boolean contains(Element e) {
+		return elements.contains(e);
 	}
 
 	// Adott irányban lévő szomszédok elkérése
@@ -145,17 +117,10 @@ public class Field {
 		return elements.isEmpty();
 	}
 
-	public boolean isFull() {
-		return isFull;
-	}
-
 	// Adott irányba lévő szomszédok beállítása
 	public void setNeighbour(Direction d, Field f) {
 
 		neighbours.put(d, f);
 	}
 
-	public void setFull(boolean isFull) {
-		this.isFull = isFull;
-	}
 }

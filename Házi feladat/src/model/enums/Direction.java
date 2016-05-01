@@ -1,4 +1,4 @@
-package enums;
+package model.enums;
 
 // A pályán lévő irányokat jelölő enumeráció
 public enum Direction {

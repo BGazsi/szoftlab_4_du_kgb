@@ -1,12 +1,12 @@
-package portal;
+package model.portal;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import element.Wall;
-import element.movable.player.Player;
-import enums.PortalColour;
-import field.Field;
+import model.element.Wall;
+import model.element.movable.player.Player;
+import model.enums.PortalColour;
+import model.field.Field;
 
 // Portálokat szimbolizáló osztály
 public class Portals {
@@ -34,8 +34,6 @@ public class Portals {
 
 		portals.put(colour, portal);
 
-		// TODO remove next line
-		System.out.println("Created " + colour.toString() + " portal on '" + wall.getName() + "' wall.");
 	}
 
 	// Egy adott falra vonatkozó ellenőrzés, hogy van-e rajta portál
