@@ -9,10 +9,12 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 
 import model.element.Element;
-import model.element.Gap;
+import model.element.movable.Bullet;
+import model.element.movable.Replicator;
 import model.element.movable.player.Colonel;
 import model.element.movable.player.Jaffa;
 import model.enums.Direction;
+import model.enums.PortalColour;
 import model.field.Field;
 import view.GameFrame;
 import view.GamePanel;
@@ -115,29 +117,56 @@ public class Game {
 		findField(e).exit(e);
 	}
 
-	public static void player1Moved(Direction direction) {
+	public static void panelRepaint() {
 
-		player1.setDirection(direction);
-		player1.step();
 		panel.revalidate();
 		panel.repaint();
 	}
 
+	public static void player1Moved(Direction direction) {
+
+		if (player1.getDirection() == direction) {
+			player1.step();
+			panelRepaint();
+		} else {
+			player1.setDirection(direction);
+		}
+	}
+
+	public static void player1Shoot(PortalColour portalColour) {
+
+		Bullet b = player1.shoot(portalColour);
+		new AutoStepController(b, false).start();
+		panelRepaint();
+	}
+
 	public static void player2Moved(Direction direction) {
 
-		player2.setDirection(direction);
-		player2.step();
-		panel.revalidate();
-		panel.repaint();
+		if (player2.getDirection() == direction) {
+			player2.step();
+			panelRepaint();
+		} else {
+			player2.setDirection(direction);
+		}
+	}
+
+	public static void player2Shoot(PortalColour portalColour) {
+
+		Bullet b = player2.shoot(portalColour);
+		new AutoStepController(b, false).start();
+		panelRepaint();
 	}
 
 	public static void main(String[] args) {
 
 		initGame(5, 5);
-		player1 = new Colonel(1, fieldReference, Direction.NORTH);
 
-		addElement(player1, fieldReference);
-		addElement(new Gap(), fieldReference.getNeighbour(Direction.EAST).getNeighbour(Direction.SOUTH));
+		Replicator replicator = new Replicator(fieldReference.getNeighbour(Direction.EAST).getNeighbour(Direction.SOUTH)
+				.getNeighbour(Direction.EAST).getNeighbour(Direction.SOUTH), Direction.SOUTH);
+
+		addElement(replicator, fieldReference.getNeighbour(Direction.EAST).getNeighbour(Direction.SOUTH)
+				.getNeighbour(Direction.EAST).getNeighbour(Direction.SOUTH));
+		new AutoStepController(replicator, true).start();
 
 		panel = new GamePanel();
 		JFrame frame = new GameFrame(panel);

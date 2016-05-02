@@ -68,12 +68,14 @@ public abstract class Player extends Movable {
 		p.stay();
 	}
 
-	public void shoot(PortalColour color) {
+	public Bullet shoot(PortalColour color) {
 
 		Bullet b = new Bullet(position, direction, color);
 
 		Game.addElement(b, position);
 		b.step();
+
+		return b;
 	}
 
 	public void pickUpBox(Box b) {

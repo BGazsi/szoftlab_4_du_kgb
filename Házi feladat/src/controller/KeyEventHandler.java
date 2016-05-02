@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import model.enums.Direction;
+import model.enums.PortalColour;
 
 public class KeyEventHandler implements KeyListener {
 
@@ -22,6 +23,12 @@ public class KeyEventHandler implements KeyListener {
 			break;
 		case 'l':
 			Game.player1Moved(Direction.WEST);
+			break;
+		case 'o':
+			Game.player1Shoot(PortalColour.BLUE);
+			break;
+		case 'ő':
+			Game.player1Shoot(PortalColour.YELLOW);
 			break;
 
 		// TODO finish

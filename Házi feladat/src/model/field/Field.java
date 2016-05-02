@@ -86,7 +86,7 @@ public class Field {
 				}
 			} else if (e instanceof Box && 1 > priority) {
 				priority = 1;
-				c = "" + e.getClass().getSimpleName().charAt(0);
+				c = "" + e.getClass().getSimpleName().charAt(0) + "x";
 			} else if (e instanceof ZPM && 2 > priority) {
 				priority = 2;
 				c = "Z";
