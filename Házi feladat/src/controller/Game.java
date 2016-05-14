@@ -8,7 +8,13 @@ import java.util.Set;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import model.element.Box;
+import model.element.Door;
 import model.element.Element;
+import model.element.Gap;
+import model.element.Scale;
+import model.element.Wall;
+import model.element.ZPM;
 import model.element.movable.Bullet;
 import model.element.movable.Replicator;
 import model.element.movable.player.Colonel;
@@ -21,6 +27,9 @@ import view.GamePanel;
 
 // A játék színterét leíró osztály
 public class Game {
+
+	private final static long BULLET_DELAY = 250;
+	private final static long REPLICATOR_DELAY = 1000;
 
 	private static Field fieldReference;
 	private static Dimension fieldSize;
@@ -38,6 +47,11 @@ public class Game {
 			for (int col = 0; col < x; col++) {
 
 				newRow[col] = new Field();
+
+				if (row == 0 || row == y - 1 || col == 0 || col == x - 1) {
+					newRow[col].enter(new Wall(false));
+				}
+
 				if (col > 0) {
 					newRow[col - 1].setNeighbour(Direction.EAST, newRow[col]);
 					newRow[col].setNeighbour(Direction.WEST, newRow[col - 1]);
@@ -125,48 +139,85 @@ public class Game {
 
 	public static void player1Moved(Direction direction) {
 
-		if (player1.getDirection() == direction) {
+		if (player1.getDirection() == direction && !player1.isKilled()) {
 			player1.step();
-			panelRepaint();
 		} else {
 			player1.setDirection(direction);
 		}
+		panelRepaint();
 	}
 
 	public static void player1Shoot(PortalColour portalColour) {
 
 		Bullet b = player1.shoot(portalColour);
-		new AutoStepController(b, false).start();
+		new AutoStepController(b, false, BULLET_DELAY).start();
+		panelRepaint();
+	}
+
+	public static void player1PutDownBox() {
+
+		player1.putDownBox();
 		panelRepaint();
 	}
 
 	public static void player2Moved(Direction direction) {
 
-		if (player2.getDirection() == direction) {
+		if (player2.getDirection() == direction && !player2.isKilled()) {
 			player2.step();
-			panelRepaint();
 		} else {
 			player2.setDirection(direction);
 		}
+		panelRepaint();
 	}
 
 	public static void player2Shoot(PortalColour portalColour) {
 
 		Bullet b = player2.shoot(portalColour);
-		new AutoStepController(b, false).start();
+		new AutoStepController(b, false, BULLET_DELAY).start();
+		panelRepaint();
+	}
+
+	public static void player2PutDownBox() {
+
+		player2.putDownBox();
 		panelRepaint();
 	}
 
 	public static void main(String[] args) {
 
-		initGame(5, 5);
+		initGame(10, 10);
 
-		Replicator replicator = new Replicator(fieldReference.getNeighbour(Direction.EAST).getNeighbour(Direction.SOUTH)
-				.getNeighbour(Direction.EAST).getNeighbour(Direction.SOUTH), Direction.SOUTH);
+		Field player1Field = fieldReference.getNeighbour(8, Direction.EAST).getNeighbour(Direction.SOUTH);
+		Field player2Field = fieldReference.getNeighbour(1, Direction.EAST).getNeighbour(Direction.SOUTH);
+		Field replicatorField = fieldReference.getNeighbour(8, Direction.EAST).getNeighbour(8, Direction.SOUTH);
+		player1 = new Colonel(1, player1Field, Direction.SOUTH);
+		player2 = new Jaffa(1, player2Field, Direction.SOUTH);
+		Replicator replicator = new Replicator(replicatorField, Direction.WEST);
+		Door door = new Door();
 
-		addElement(replicator, fieldReference.getNeighbour(Direction.EAST).getNeighbour(Direction.SOUTH)
-				.getNeighbour(Direction.EAST).getNeighbour(Direction.SOUTH));
-		new AutoStepController(replicator, true).start();
+		// addElement(new Gap(), fieldReference.getNeighbour(7,
+		// Direction.EAST).getNeighbour(8, Direction.SOUTH));
+		// addElement(new Gap(), fieldReference.getNeighbour(8,
+		// Direction.EAST).getNeighbour(7, Direction.SOUTH));
+
+		addElement(player1, player1Field);
+		addElement(player2, player2Field);
+		addElement(replicator, replicatorField);
+		addElement(new Wall(true), fieldReference.getNeighbour(1, Direction.EAST).getNeighbour(5, Direction.SOUTH));
+		addElement(new Wall(true), fieldReference.getNeighbour(3, Direction.EAST).getNeighbour(5, Direction.SOUTH));
+		addElement(new Wall(true), fieldReference.getNeighbour(4, Direction.EAST).getNeighbour(5, Direction.SOUTH));
+		addElement(new Wall(true), fieldReference.getNeighbour(4, Direction.EAST).getNeighbour(6, Direction.SOUTH));
+		addElement(new Wall(true), fieldReference.getNeighbour(4, Direction.EAST).getNeighbour(7, Direction.SOUTH));
+		addElement(new Wall(true), fieldReference.getNeighbour(4, Direction.EAST).getNeighbour(8, Direction.SOUTH));
+		addElement(door, fieldReference.getNeighbour(2, Direction.EAST).getNeighbour(5, Direction.SOUTH));
+		addElement(new Scale(door, 5), fieldReference.getNeighbour(5, Direction.EAST).getNeighbour(8, Direction.SOUTH));
+		addElement(new Box(5), fieldReference.getNeighbour(1, Direction.EAST).getNeighbour(4, Direction.SOUTH));
+		addElement(new Gap(), fieldReference.getNeighbour(1, Direction.EAST).getNeighbour(8, Direction.SOUTH));
+		addElement(new ZPM(), fieldReference.getNeighbour(2, Direction.EAST).getNeighbour(8, Direction.SOUTH));
+		addElement(new ZPM(), fieldReference.getNeighbour(3, Direction.EAST).getNeighbour(8, Direction.SOUTH));
+		addElement(new ZPM(), fieldReference.getNeighbour(3, Direction.EAST).getNeighbour(7, Direction.SOUTH));
+
+		new AutoStepController(replicator, true, REPLICATOR_DELAY).start();
 
 		panel = new GamePanel();
 		JFrame frame = new GameFrame(panel);

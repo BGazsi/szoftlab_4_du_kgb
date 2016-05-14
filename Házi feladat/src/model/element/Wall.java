@@ -1,6 +1,7 @@
 package model.element;
 
 import model.element.movable.Bullet;
+import model.element.movable.Replicator;
 import model.element.movable.player.Player;
 import model.portal.Portals;
 
@@ -29,6 +30,12 @@ public class Wall extends Element {
 		}
 	}
 
+	@Override
+	public void meet(Replicator r) {
+
+		r.stay();
+	}
+
 	// Lövedékkel való egy mezőre kerülés
 	@Override
 	public void meet(Bullet b) {
@@ -38,5 +45,9 @@ public class Wall extends Element {
 		}
 
 		b.destroy();
+	}
+
+	public boolean isShootable() {
+		return isShootable;
 	}
 }

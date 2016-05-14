@@ -11,11 +11,14 @@ public abstract class Movable extends Element {
 	protected Field position;
 	// irány
 	protected Direction direction;
+	// él-e még
+	protected boolean killed;
 
 	public Movable(Field position, Direction direction) {
 
 		this.position = position;
 		this.direction = direction;
+		this.killed = false;
 	}
 
 	// A mozgást leíró függvény
@@ -29,6 +32,10 @@ public abstract class Movable extends Element {
 
 	public Direction getDirection() {
 		return direction;
+	}
+
+	public boolean isKilled() {
+		return killed;
 	}
 
 	public void setPosition(Field position) {

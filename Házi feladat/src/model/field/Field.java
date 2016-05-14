@@ -8,12 +8,12 @@ import java.util.Set;
 import model.element.Box;
 import model.element.Door;
 import model.element.Element;
-import model.element.Gap;
 import model.element.Scale;
 import model.element.Wall;
-import model.element.ZPM;
+import model.element.movable.Bullet;
 import model.element.movable.Movable;
 import model.enums.Direction;
+import model.enums.FieldStatus;
 import model.enums.PortalColour;
 import model.portal.Portals;
 
@@ -55,52 +55,71 @@ public class Field {
 		elements.remove(e);
 	}
 
-	// A fieldet szimbolizáló karakter
-	public String getStatusString() {
+	// A fieldet szimbolizáló státusz
+	public FieldStatus getStatus() {
 
-		int priority = 0;
-		String c = " ";
+		FieldStatus result = FieldStatus.UNKNOWN;
 
 		for (Element e : elements) {
 
-			if (e instanceof Gap && 1 > priority) {
-				priority = 1;
-				c = "X";
-			} else if (e instanceof Door && 1 > priority) {
-				priority = 1;
-				Door d = (Door) e;
-				if (d.isOpened()) {
-					c = "\\";
-				} else {
-					c = "|";
-				}
-			} else if (e instanceof Wall && 1 > priority) {
-				priority = 1;
-				Wall w = (Wall) e;
-				PortalColour pc = Portals.findPortal(w, null);
+			FieldStatus fieldStatus = FieldStatus.valueOf(e.getClass().getSimpleName().toUpperCase());
 
-				if (pc != null) {
-					c = ("" + pc.toString().charAt(0)).toLowerCase();
-				} else {
-					c = "" + e.getClass().getSimpleName().charAt(0);
+			if (e instanceof Wall) {
+
+				Wall wall = (Wall) e;
+
+				for (Direction direction : Direction.values()) {
+
+					PortalColour portalColour = Portals.findPortal(wall, getNeighbour(direction));
+					if (portalColour != null) {
+
+						if (fieldStatus == FieldStatus.WALL) {
+
+							fieldStatus = FieldStatus.PORTAL;
+							fieldStatus.clear();
+						}
+
+						fieldStatus.put(direction.toString(), portalColour);
+					}
 				}
-			} else if (e instanceof Box && 1 > priority) {
-				priority = 1;
-				c = "" + e.getClass().getSimpleName().charAt(0) + "x";
-			} else if (e instanceof ZPM && 2 > priority) {
-				priority = 2;
-				c = "Z";
-			} else if (e instanceof Scale && 2 > priority) {
-				priority = 2;
-				Scale s = (Scale) e;
-				c = Integer.toString(s.allWeight());
-			} else if (e instanceof Movable && 3 > priority) {
-				priority = 3;
-				c = "" + e.getClass().getSimpleName().charAt(0);
+
+				if (fieldStatus == FieldStatus.WALL) {
+					fieldStatus.put("shootable", wall.isShootable());
+				}
+
+			} else if (e instanceof Bullet) {
+
+				Bullet bullet = (Bullet) e;
+				fieldStatus.put("colour", bullet.getPortalColour());
+				fieldStatus.put("direction", bullet.getDirection());
+
+			} else if (e instanceof Movable) {
+
+				Movable movable = (Movable) e;
+				fieldStatus.put("direction", movable.getDirection());
+
+			} else if (e instanceof Box) {
+
+				Box box = (Box) e;
+				fieldStatus.put("weight", box.getWeight());
+
+			} else if (e instanceof Door) {
+
+				Door door = (Door) e;
+				fieldStatus.put("opened", door.isOpened());
+			} else if (e instanceof Scale) {
+
+				Scale scale = (Scale) e;
+				fieldStatus.put("weightlimit", scale.getWeightLimit());
+				fieldStatus.put("allweight", scale.allWeight());
+			}
+
+			if (fieldStatus.getPriority() > result.getPriority()) {
+				result = fieldStatus;
 			}
 		}
 
-		return c;
+		return result;
 	}
 
 	public boolean contains(Element e) {
@@ -111,6 +130,18 @@ public class Field {
 	public Field getNeighbour(Direction d) {
 
 		return neighbours.get(d);
+	}
+
+	// Adott irányban lévő step-edik szomszéd elkérése
+	public Field getNeighbour(int step, Direction d) {
+
+		Field field = this;
+
+		for (int i = 0; i < step; i++) {
+			field = field.getNeighbour(d);
+		}
+
+		return field;
 	}
 
 	public boolean isEmpty() {

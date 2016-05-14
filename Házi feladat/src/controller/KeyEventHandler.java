@@ -30,20 +30,39 @@ public class KeyEventHandler implements KeyListener {
 		case 'ő':
 			Game.player1Shoot(PortalColour.YELLOW);
 			break;
+		case ',':
+			Game.player1PutDownBox();
+			break;
 
-		// TODO finish
+		case 'w':
+			Game.player2Moved(Direction.NORTH);
+			break;
+		case 's':
+			Game.player2Moved(Direction.SOUTH);
+			break;
+		case 'd':
+			Game.player2Moved(Direction.EAST);
+			break;
+		case 'a':
+			Game.player2Moved(Direction.WEST);
+			break;
+		case 'q':
+			Game.player2Shoot(PortalColour.GREEN);
+			break;
+		case 'e':
+			Game.player2Shoot(PortalColour.RED);
+			break;
+		case 'c':
+			Game.player2PutDownBox();
+			break;
 		}
 	}
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
-
 	}
 }

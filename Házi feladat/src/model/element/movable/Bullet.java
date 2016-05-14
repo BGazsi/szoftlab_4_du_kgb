@@ -23,15 +23,13 @@ public class Bullet extends Movable {
 	@Override
 	public void step() {
 
-		// FIXME auto
-
 		// elkéri az adott irányba lévő mezőt
 		Field nextField = position.getNeighbour(direction);
 
-		// az új mezőre rélép
-		nextField.enter(this);
 		// régi mezőről lelép
 		position.exit(this);
+		// az új mezőre rélép
+		nextField.enter(this);
 		position = nextField;
 
 	}
@@ -46,6 +44,7 @@ public class Bullet extends Movable {
 	// A lövedék megsemmisülésére vonatkozó függvény
 	public void destroy() {
 
+		killed = true;
 		Game.removeElement(this);
 	}
 
@@ -53,6 +52,13 @@ public class Bullet extends Movable {
 	public PortalColour getPortalColour() {
 
 		return portalColour;
+	}
+
+	@Override
+	public void meet(Replicator r) {
+
+		destroy();
+		r.die();
 	}
 
 }

@@ -73,4 +73,8 @@ public class Scale extends Element {
 			door.close();
 		}
 	}
+
+	public int getWeightLimit() {
+		return weightLimit;
+	}
 }

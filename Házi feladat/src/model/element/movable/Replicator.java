@@ -26,25 +26,30 @@ public class Replicator extends Movable {
 	@Override
 	public void step() {
 
-		// FIXME auto
-
 		Field nextField = position.getNeighbour(direction);
 
+		position.exit(this);
 		nextField.enter(this);
 		if (needToStay) {
 
 			needToStay = false;
 			nextField.exit(this);
+			position.enter(this);
 
 		} else {
 
-			position.exit(this);
 			position = nextField;
 		}
 	}
 
+	public void stay() {
+
+		needToStay = true;
+	}
+
 	public void die() {
 
+		killed = true;
 		Game.removeElement(this);
 	}
 

@@ -9,31 +9,36 @@ public class AutoStepController extends Thread {
 
 	private Movable movable;
 	private boolean randomDirection;
+	private long delay;
 
-	public AutoStepController(Movable movable, boolean randomDirection) {
+	public AutoStepController(Movable movable, boolean randomDirection, long delay) {
 
 		this.movable = movable;
 		this.randomDirection = randomDirection;
+		this.delay = delay;
 	}
 
 	@Override
 	public void run() {
-		while (true) {
+		while (!movable.isKilled()) {
 
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(delay);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 
-			if (randomDirection) {
-				Random rnd = new Random();
-				Direction newDirection = Direction.values()[rnd.nextInt(Direction.values().length)];
-				movable.setDirection(newDirection);
-			}
+			if (!movable.isKilled()) {
 
-			movable.step();
-			Game.panelRepaint();
+				if (randomDirection) {
+					Random rnd = new Random();
+					Direction newDirection = Direction.values()[rnd.nextInt(Direction.values().length)];
+					movable.setDirection(newDirection);
+				}
+
+				movable.step();
+				Game.panelRepaint();
+			}
 		}
 	}
 }

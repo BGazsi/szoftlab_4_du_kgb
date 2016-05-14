@@ -6,6 +6,7 @@ import model.element.Element;
 import model.element.ZPM;
 import model.element.movable.Bullet;
 import model.element.movable.Movable;
+import model.element.movable.Replicator;
 import model.enums.Direction;
 import model.enums.PortalColour;
 import model.field.Field;
@@ -32,15 +33,16 @@ public abstract class Player extends Movable {
 
 		Field nextField = position.getNeighbour(direction);
 
+		position.exit(this);
 		nextField.enter(this);
 		if (needToStay) {
 
 			needToStay = false;
 			nextField.exit(this);
+			position.enter(this);
 
 		} else {
 
-			position.exit(this);
 			position = nextField;
 		}
 	}
@@ -98,6 +100,7 @@ public abstract class Player extends Movable {
 
 	public void die() {
 
+		killed = true;
 		Game.removeElement(this);
 	}
 
@@ -109,5 +112,11 @@ public abstract class Player extends Movable {
 
 	public Box getBox() {
 		return box;
+	}
+
+	@Override
+	public void meet(Replicator r) {
+
+		r.stay();
 	}
 }
