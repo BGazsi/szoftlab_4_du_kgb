@@ -110,6 +110,10 @@ public abstract class Player extends Movable {
 		return box == null ? weight : weight + box.getWeight();
 	}
 
+	public int getZMPcount() {
+		return ZMPcount;
+	}
+
 	public Box getBox() {
 		return box;
 	}

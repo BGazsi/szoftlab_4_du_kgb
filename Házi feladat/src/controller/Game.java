@@ -6,6 +6,7 @@ import java.util.Random;
 import java.util.Set;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 import model.element.Box;
@@ -19,6 +20,7 @@ import model.element.movable.Bullet;
 import model.element.movable.Replicator;
 import model.element.movable.player.Colonel;
 import model.element.movable.player.Jaffa;
+import model.element.movable.player.Player;
 import model.enums.Direction;
 import model.enums.PortalColour;
 import model.field.Field;
@@ -33,9 +35,11 @@ public class Game {
 
 	private static Field fieldReference;
 	private static Dimension fieldSize;
+	private static int allZPMcount = 0;
 	private static Colonel player1;
 	private static Jaffa player2;
 	private static Set<Element> elements = new HashSet<Element>();
+	private static JFrame frame;
 	private static JPanel panel;
 
 	private static void initGame(int x, int y) {
@@ -70,6 +74,13 @@ public class Game {
 		fieldSize = new Dimension(x, y);
 	}
 
+	private static void end(Player winner) {
+
+		panelRepaint();
+		JOptionPane.showMessageDialog(frame, "The " + winner.getClass().getSimpleName() + " win!");
+		System.exit(0);
+	}
+
 	private static Field findField(Element e) {
 
 		for (Field rowStart = fieldReference; rowStart != null; rowStart = rowStart.getNeighbour(Direction.SOUTH)) {
@@ -102,6 +113,12 @@ public class Game {
 
 	public static Field getFieldReference() {
 		return fieldReference;
+	}
+
+	public static void addElement(ZPM zpm, Field f) {
+
+		addElement((Element) zpm, f);
+		allZPMcount++;
 	}
 
 	public static void addElement(Element e, Field f) {
@@ -139,48 +156,99 @@ public class Game {
 
 	public static void player1Moved(Direction direction) {
 
-		if (player1.getDirection() == direction && !player1.isKilled()) {
-			player1.step();
-		} else {
-			player1.setDirection(direction);
+		if (player1 != null) {
+
+			if (player1.getDirection() == direction) {
+
+				player1.step();
+				if (player1.isKilled()) {
+
+					player1 = null;
+					end(player2);
+
+				} else if (player1.getZMPcount() + player2.getZMPcount() == allZPMcount) {
+
+					if (player2.getZMPcount() > player1.getZMPcount()) {
+						end(player2);
+					} else {
+						end(player1);
+					}
+				}
+
+			} else {
+				player1.setDirection(direction);
+			}
+
+			panelRepaint();
 		}
-		panelRepaint();
 	}
 
 	public static void player1Shoot(PortalColour portalColour) {
 
-		Bullet b = player1.shoot(portalColour);
-		new AutoStepController(b, false, BULLET_DELAY).start();
-		panelRepaint();
+		if (player1 != null) {
+
+			Bullet b = player1.shoot(portalColour);
+			new AutoStepController(b, false, BULLET_DELAY).start();
+			panelRepaint();
+		}
 	}
 
 	public static void player1PutDownBox() {
 
-		player1.putDownBox();
-		panelRepaint();
+		if (player1 != null) {
+
+			player1.putDownBox();
+
+			panelRepaint();
+		}
 	}
 
 	public static void player2Moved(Direction direction) {
 
-		if (player2.getDirection() == direction && !player2.isKilled()) {
-			player2.step();
-		} else {
-			player2.setDirection(direction);
+		if (player2 != null) {
+
+			if (player2.getDirection() == direction && !player2.isKilled()) {
+
+				player2.step();
+				if (player2.isKilled()) {
+
+					player2 = null;
+					end(player1);
+
+				} else if (player1.getZMPcount() + player2.getZMPcount() == allZPMcount) {
+
+					if (player2.getZMPcount() > player1.getZMPcount()) {
+						end(player2);
+					} else {
+						end(player1);
+					}
+				}
+
+			} else {
+				player2.setDirection(direction);
+			}
+
+			panelRepaint();
 		}
-		panelRepaint();
 	}
 
 	public static void player2Shoot(PortalColour portalColour) {
 
-		Bullet b = player2.shoot(portalColour);
-		new AutoStepController(b, false, BULLET_DELAY).start();
-		panelRepaint();
+		if (player2 != null) {
+
+			Bullet b = player2.shoot(portalColour);
+			new AutoStepController(b, false, BULLET_DELAY).start();
+			panelRepaint();
+		}
 	}
 
 	public static void player2PutDownBox() {
 
-		player2.putDownBox();
-		panelRepaint();
+		if (player2 != null) {
+
+			player2.putDownBox();
+			panelRepaint();
+		}
 	}
 
 	public static void main(String[] args) {
@@ -220,7 +288,7 @@ public class Game {
 		new AutoStepController(replicator, true, REPLICATOR_DELAY).start();
 
 		panel = new GamePanel();
-		JFrame frame = new GameFrame(panel);
+		frame = new GameFrame(panel);
 
 		frame.addKeyListener(new KeyEventHandler());
 	}

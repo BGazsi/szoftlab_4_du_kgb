@@ -5,6 +5,7 @@ import java.util.Map;
 
 import model.element.Wall;
 import model.element.movable.player.Player;
+import model.enums.FieldStatus;
 import model.enums.PortalColour;
 import model.field.Field;
 
@@ -56,8 +57,11 @@ public class Portals {
 		Field oldField = player.getPosition();
 		Field newField = portals.get(findPortal(wall, oldField).getPair()).outputField;
 
-		oldField.exit(player);
-		player.setPosition(newField);
-		newField.enter(player);
+		if (newField.getStatus() != FieldStatus.COLONEL && newField.getStatus() != FieldStatus.JAFFA) {
+
+			oldField.exit(player);
+			player.setPosition(newField);
+			newField.enter(player);
+		}
 	}
 }
